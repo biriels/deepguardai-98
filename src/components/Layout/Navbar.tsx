@@ -17,6 +17,7 @@ import { useUser } from "@/contexts/UserContext";
 import { ProfileSettingsModal } from "@/components/Profile/SettingsModal";
 import { BillingModal } from "@/components/Profile/BillingModal";
 import { ApiKeysModal } from "@/components/Profile/ApiKeysModal";
+import NotificationDropdown from "@/components/Notifications/NotificationDropdown";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = React.useState(false);
@@ -88,10 +89,8 @@ const Navbar = () => {
             >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
-            <Button variant="outline" size="icon" className="relative">
-              <Bell size={18} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-violet-500 rounded-full"></span>
-            </Button>
+            
+            <NotificationDropdown />
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

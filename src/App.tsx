@@ -11,24 +11,27 @@ import Team from "./pages/Team";
 import NotFound from "./pages/NotFound";
 import { Toaster } from "./components/ui/toaster";
 import { UserProvider } from "./contexts/UserContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
 
 function App() {
   return (
     <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/monitoring" element={<Monitoring />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/alerts" element={<Alerts />} />
-          <Route path="/detection" element={<Detection />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Toaster />
-      </Router>
+      <NotificationProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/monitoring" element={<Monitoring />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/detection" element={<Detection />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Toaster />
+        </Router>
+      </NotificationProvider>
     </UserProvider>
   );
 }
