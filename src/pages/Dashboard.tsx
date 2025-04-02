@@ -7,10 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dashboard = () => {
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleRefreshDashboard = () => {
     setIsRefreshing(true);
@@ -27,7 +29,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-2">
@@ -37,7 +39,7 @@ const Dashboard = () => {
         <Button 
           onClick={handleRefreshDashboard} 
           disabled={isRefreshing}
-          className="gap-2"
+          className={`gap-2 ${isMobile ? "w-full" : ""}`}
         >
           <RefreshCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           {isRefreshing ? 'Refreshing...' : 'Refresh Dashboard'}
