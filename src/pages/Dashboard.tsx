@@ -6,13 +6,15 @@ import { RevenueChart } from "@/components/Dashboard/RevenueChart";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Shield, AlertTriangle, BarChart3, Image, Video } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const handleRefreshDashboard = () => {
     setIsRefreshing(true);
@@ -22,7 +24,7 @@ const Dashboard = () => {
       setIsRefreshing(false);
       toast({
         title: "Dashboard Updated",
-        description: "Latest data has been loaded",
+        description: "Latest detection data has been loaded",
       });
     }, 1500);
   };
@@ -31,9 +33,9 @@ const Dashboard = () => {
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Deepfake Detection Dashboard</h1>
           <p className="text-muted-foreground mt-2">
-            Welcome back! Here's an overview of your business metrics
+            Monitor detection trends and analyze media authenticity
           </p>
         </div>
         <Button 
@@ -60,36 +62,67 @@ const Dashboard = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full justify-start" 
-                onClick={() => toast({ 
-                  title: "Report Exported", 
-                  description: "Monthly report has been downloaded" 
-                })}
+                className="w-full justify-start gap-2" 
+                onClick={() => {
+                  navigate('/detection');
+                  toast({ 
+                    title: "Detection Tool Opened", 
+                    description: "Ready to analyze new media content" 
+                  });
+                }}
               >
-                Export Monthly Report
+                <Shield className="h-4 w-4" />
+                Analyze New Content
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full justify-start"
-                onClick={() => toast({ 
-                  title: "Notification Sent", 
-                  description: "Team members have been notified" 
-                })}
+                className="w-full justify-start gap-2"
+                onClick={() => {
+                  navigate('/alerts');
+                  toast({ 
+                    title: "Alert Center Opened", 
+                    description: "Viewing recent detection alerts" 
+                  });
+                }}
               >
-                Notify Team
+                <AlertTriangle className="h-4 w-4" />
+                View Recent Alerts
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full justify-start"
-                onClick={() => toast({ 
-                  title: "Settings Opened", 
-                  description: "Redirecting to account settings" 
-                })}
+                className="w-full justify-start gap-2"
+                onClick={() => {
+                  navigate('/analytics');
+                  toast({ 
+                    title: "Analytics Opened", 
+                    description: "Viewing detailed detection analytics" 
+                  });
+                }}
               >
-                Account Settings
+                <BarChart3 className="h-4 w-4" />
+                View Full Analytics
               </Button>
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-sm font-medium mb-2">Latest Scans</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 border-l-2 border-green-500 pl-3 py-1">
+                    <Image className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">Profile Photo</p>
+                      <p className="text-xs text-muted-foreground">Authentic (99.4%)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 border-l-2 border-red-500 pl-3 py-1">
+                    <Video className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">Interview Clip</p>
+                      <p className="text-xs text-muted-foreground">Deepfake (87.2%)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

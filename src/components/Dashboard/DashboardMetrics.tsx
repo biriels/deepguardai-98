@@ -10,15 +10,7 @@ export function DashboardMetrics() {
   const { toast } = useToast();
   const [metrics, setMetrics] = useState([
     {
-      title: "Total Revenue",
-      value: "$48,724.63",
-      change: "+12.5%",
-      positive: true,
-      editing: false,
-      tempValue: "$48,724.63",
-    },
-    {
-      title: "Total Transactions",
+      title: "Total Detections",
       value: "1,482",
       change: "+8.2%",
       positive: true,
@@ -26,20 +18,28 @@ export function DashboardMetrics() {
       tempValue: "1,482",
     },
     {
-      title: "Average Transaction",
-      value: "$32.88",
+      title: "Deepfakes Detected",
+      value: "347",
+      change: "+12.5%",
+      positive: false,
+      editing: false,
+      tempValue: "347",
+    },
+    {
+      title: "Detection Accuracy",
+      value: "94.3%",
       change: "+2.4%",
       positive: true,
       editing: false,
-      tempValue: "$32.88",
+      tempValue: "94.3%",
     },
     {
-      title: "Conversion Rate",
-      value: "3.42%",
-      change: "-0.5%",
-      positive: false,
+      title: "Media Analyzed",
+      value: "5,271",
+      change: "+15.7%",
+      positive: true,
       editing: false,
-      tempValue: "3.42%",
+      tempValue: "5,271",
     },
   ]);
 
@@ -71,23 +71,34 @@ export function DashboardMetrics() {
   };
 
   const randomizeMetrics = () => {
-    const randomizeValue = (isPercentage = false, isDollar = false) => {
-      const baseValue = Math.random() * 100;
+    const randomizeValue = (isPercentage = false) => {
       if (isPercentage) {
-        return `${baseValue.toFixed(2)}%`;
-      } else if (isDollar) {
-        return `$${(baseValue * 1000).toFixed(2)}`;
+        return `${(Math.random() * 20 + 80).toFixed(1)}%`;
+      } else {
+        const base = Math.random() * 5000 + 1000;
+        return base > 2000 ? `${Math.round(base).toLocaleString()}` : `${Math.round(base)}`;
       }
-      return `${Math.round(baseValue * 100)}`;
     };
 
     const newMetrics = metrics.map(metric => {
       const isPercentage = metric.value.includes("%");
-      const isDollar = metric.value.includes("$");
-      
-      const randomValue = randomizeValue(isPercentage, isDollar);
+      const randomValue = randomizeValue(isPercentage);
       const randomChange = `${Math.random() > 0.5 ? "+" : "-"}${(Math.random() * 10).toFixed(1)}%`;
       const isPositive = randomChange.startsWith("+");
+      
+      if (metric.title === "Deepfakes Detected" && !isPercentage) {
+        // Make sure deepfake count is lower than total detections
+        const totalDetections = parseInt(metrics[0].value.replace(/,/g, ""));
+        const value = Math.min(Math.round(Math.random() * totalDetections * 0.4), totalDetections).toString();
+        return {
+          ...metric,
+          value: value > 1000 ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value,
+          change: randomChange,
+          positive: isPositive,
+          editing: false,
+          tempValue: value
+        };
+      }
       
       return {
         ...metric,
@@ -103,7 +114,7 @@ export function DashboardMetrics() {
     
     toast({
       title: "Metrics Refreshed",
-      description: "All metrics have been updated with new data",
+      description: "All detection metrics have been updated with new data",
     });
   };
 
@@ -111,7 +122,7 @@ export function DashboardMetrics() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Button size="sm" variant="outline" onClick={randomizeMetrics}>
-          Refresh Metrics
+          Refresh Detection Stats
         </Button>
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

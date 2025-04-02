@@ -12,56 +12,56 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Legend,
 } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Download, Save } from "lucide-react";
+import { CalendarIcon, Download } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 // Sample data for the charts
-const generateRevenueData = () => [
-  { name: "Jan", revenue: Math.floor(Math.random() * 5000) + 3000 },
-  { name: "Feb", revenue: Math.floor(Math.random() * 5000) + 3000 },
-  { name: "Mar", revenue: Math.floor(Math.random() * 5000) + 3000 },
-  { name: "Apr", revenue: Math.floor(Math.random() * 5000) + 4000 },
-  { name: "May", revenue: Math.floor(Math.random() * 5000) + 5000 },
-  { name: "Jun", revenue: Math.floor(Math.random() * 5000) + 5000 },
-  { name: "Jul", revenue: Math.floor(Math.random() * 5000) + 7000 },
-  { name: "Aug", revenue: Math.floor(Math.random() * 5000) + 8000 },
-  { name: "Sep", revenue: Math.floor(Math.random() * 5000) + 7000 },
-  { name: "Oct", revenue: Math.floor(Math.random() * 5000) + 6000 },
-  { name: "Nov", revenue: Math.floor(Math.random() * 5000) + 8000 },
-  { name: "Dec", revenue: Math.floor(Math.random() * 5000) + 10000 },
+const generateDetectionData = () => [
+  { name: "Jan", deepfakes: Math.floor(Math.random() * 200) + 100, genuine: Math.floor(Math.random() * 500) + 300, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Feb", deepfakes: Math.floor(Math.random() * 200) + 100, genuine: Math.floor(Math.random() * 500) + 300, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Mar", deepfakes: Math.floor(Math.random() * 200) + 100, genuine: Math.floor(Math.random() * 500) + 300, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Apr", deepfakes: Math.floor(Math.random() * 200) + 100, genuine: Math.floor(Math.random() * 500) + 300, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "May", deepfakes: Math.floor(Math.random() * 200) + 200, genuine: Math.floor(Math.random() * 500) + 400, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Jun", deepfakes: Math.floor(Math.random() * 200) + 200, genuine: Math.floor(Math.random() * 500) + 400, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Jul", deepfakes: Math.floor(Math.random() * 200) + 300, genuine: Math.floor(Math.random() * 500) + 500, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Aug", deepfakes: Math.floor(Math.random() * 200) + 300, genuine: Math.floor(Math.random() * 500) + 500, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Sep", deepfakes: Math.floor(Math.random() * 200) + 200, genuine: Math.floor(Math.random() * 500) + 400, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Oct", deepfakes: Math.floor(Math.random() * 200) + 200, genuine: Math.floor(Math.random() * 500) + 400, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Nov", deepfakes: Math.floor(Math.random() * 200) + 300, genuine: Math.floor(Math.random() * 500) + 500, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Dec", deepfakes: Math.floor(Math.random() * 200) + 400, genuine: Math.floor(Math.random() * 500) + 600, accuracy: Math.floor(Math.random() * 10) + 90 },
 ];
 
-const generateRevenueDataWeekly = () => [
-  { name: "Week 1", revenue: Math.floor(Math.random() * 1000) + 1000 },
-  { name: "Week 2", revenue: Math.floor(Math.random() * 1000) + 1000 },
-  { name: "Week 3", revenue: Math.floor(Math.random() * 1000) + 1000 },
-  { name: "Week 4", revenue: Math.floor(Math.random() * 1000) + 1500 },
+const generateDetectionDataWeekly = () => [
+  { name: "Week 1", deepfakes: Math.floor(Math.random() * 50) + 50, genuine: Math.floor(Math.random() * 150) + 100, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Week 2", deepfakes: Math.floor(Math.random() * 50) + 50, genuine: Math.floor(Math.random() * 150) + 100, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Week 3", deepfakes: Math.floor(Math.random() * 50) + 50, genuine: Math.floor(Math.random() * 150) + 100, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Week 4", deepfakes: Math.floor(Math.random() * 50) + 75, genuine: Math.floor(Math.random() * 150) + 150, accuracy: Math.floor(Math.random() * 10) + 90 },
 ];
 
-const generateRevenueDataDaily = () => [
-  { name: "Mon", revenue: Math.floor(Math.random() * 200) + 200 },
-  { name: "Tue", revenue: Math.floor(Math.random() * 200) + 200 },
-  { name: "Wed", revenue: Math.floor(Math.random() * 200) + 250 },
-  { name: "Thu", revenue: Math.floor(Math.random() * 200) + 200 },
-  { name: "Fri", revenue: Math.floor(Math.random() * 200) + 300 },
-  { name: "Sat", revenue: Math.floor(Math.random() * 200) + 150 },
-  { name: "Sun", revenue: Math.floor(Math.random() * 200) + 100 },
+const generateDetectionDataDaily = () => [
+  { name: "Mon", deepfakes: Math.floor(Math.random() * 20) + 20, genuine: Math.floor(Math.random() * 50) + 30, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Tue", deepfakes: Math.floor(Math.random() * 20) + 20, genuine: Math.floor(Math.random() * 50) + 30, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Wed", deepfakes: Math.floor(Math.random() * 20) + 25, genuine: Math.floor(Math.random() * 50) + 35, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Thu", deepfakes: Math.floor(Math.random() * 20) + 20, genuine: Math.floor(Math.random() * 50) + 30, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Fri", deepfakes: Math.floor(Math.random() * 20) + 30, genuine: Math.floor(Math.random() * 50) + 40, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Sat", deepfakes: Math.floor(Math.random() * 20) + 15, genuine: Math.floor(Math.random() * 50) + 25, accuracy: Math.floor(Math.random() * 10) + 90 },
+  { name: "Sun", deepfakes: Math.floor(Math.random() * 20) + 10, genuine: Math.floor(Math.random() * 50) + 20, accuracy: Math.floor(Math.random() * 10) + 90 },
 ];
 
 export function RevenueChart() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("yearly");
-  const [chartData, setChartData] = useState(generateRevenueData());
+  const [chartData, setChartData] = useState(generateDetectionData());
   const [chartView, setChartView] = useState<"bar" | "area">("area");
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-  const [isPredictionVisible, setIsPredictionVisible] = useState(false);
+  const [dataType, setDataType] = useState<"detection" | "accuracy">("detection");
   
   useEffect(() => {
     // Update chart data based on active tab
@@ -71,14 +71,14 @@ export function RevenueChart() {
   const refreshChartData = () => {
     switch (activeTab) {
       case "daily":
-        setChartData(generateRevenueDataDaily());
+        setChartData(generateDetectionDataDaily());
         break;
       case "weekly":
-        setChartData(generateRevenueDataWeekly());
+        setChartData(generateDetectionDataWeekly());
         break;
       case "yearly":
       default:
-        setChartData(generateRevenueData());
+        setChartData(generateDetectionData());
         break;
     }
   };
@@ -87,22 +87,22 @@ export function RevenueChart() {
     refreshChartData();
     toast({
       title: "Chart Data Refreshed",
-      description: "Latest revenue data has been loaded",
+      description: "Latest detection data has been loaded",
     });
   };
 
   const handleDownload = () => {
     toast({
       title: "Chart Downloaded",
-      description: `Revenue chart data has been exported as CSV`,
+      description: `Detection chart data has been exported as CSV`,
     });
   };
 
-  const handleTogglePrediction = () => {
-    setIsPredictionVisible(!isPredictionVisible);
+  const handleDataTypeToggle = () => {
+    setDataType(dataType === "detection" ? "accuracy" : "detection");
     toast({
-      title: isPredictionVisible ? "Predictions Hidden" : "Predictions Shown",
-      description: isPredictionVisible ? "Future revenue projections hidden" : "Future revenue projections added to chart",
+      title: "Chart View Changed",
+      description: dataType === "detection" ? "Now showing accuracy data" : "Now showing detection count data",
     });
   };
 
@@ -121,9 +121,9 @@ export function RevenueChart() {
     <Card className="col-span-4 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <div>
-          <CardTitle>Revenue Overview</CardTitle>
+          <CardTitle>Deepfake Detection Analytics</CardTitle>
           <CardDescription>
-            Track your revenue performance over time
+            Track your detection performance and accuracy over time
           </CardDescription>
         </div>
         <div className="flex gap-2">
@@ -172,9 +172,9 @@ export function RevenueChart() {
             variant="outline" 
             size="sm" 
             className="h-8 px-2"
-            onClick={handleTogglePrediction}
+            onClick={handleDataTypeToggle}
           >
-            {isPredictionVisible ? "Hide Prediction" : "Show Prediction"}
+            {dataType === "detection" ? "Show Accuracy" : "Show Counts"}
           </Button>
           
           <Button
@@ -220,191 +220,284 @@ export function RevenueChart() {
             <TabsTrigger value="yearly">Yearly</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="daily" className="h-[300px]">
-            {chartView === "bar" ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#2668f5" stopOpacity={0.2} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                    labelStyle={{ color: '#111' }}
-                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                  />
-                  <Bar dataKey="revenue" fill="url(#colorRevenue)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#2668f5" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                    labelStyle={{ color: '#111' }}
-                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#2668f5"
-                    strokeWidth={2}
-                    fill="url(#colorRevenue)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="weekly" className="h-[300px]">
-            {chartView === "bar" ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#2668f5" stopOpacity={0.2} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                    labelStyle={{ color: '#111' }}
-                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                  />
-                  <Bar dataKey="revenue" fill="url(#colorRevenue)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#2668f5" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                    labelStyle={{ color: '#111' }}
-                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#2668f5"
-                    strokeWidth={2}
-                    fill="url(#colorRevenue)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="yearly" className="h-[300px]">
-            {chartView === "bar" ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#2668f5" stopOpacity={0.2} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                    labelStyle={{ color: '#111' }}
-                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                  />
-                  <Bar dataKey="revenue" fill="url(#colorRevenue)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#2668f5" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                    labelStyle={{ color: '#111' }}
-                    contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#2668f5"
-                    strokeWidth={2}
-                    fill="url(#colorRevenue)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
-          </TabsContent>
+          {dataType === "detection" ? (
+            <>
+              <TabsContent value="daily" className="h-[300px]">
+                {chartView === "bar" ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorDeepfakes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.2} />
+                        </linearGradient>
+                        <linearGradient id="colorGenuine" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#2668f5" stopOpacity={0.2} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Legend />
+                      <Tooltip 
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Bar dataKey="deepfakes" name="Deepfakes" fill="url(#colorDeepfakes)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="genuine" name="Genuine Content" fill="url(#colorGenuine)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorDeepfakes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.1} />
+                        </linearGradient>
+                        <linearGradient id="colorGenuine" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#2668f5" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Legend />
+                      <Tooltip 
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="deepfakes"
+                        name="Deepfakes"
+                        stroke="#ff6b6b"
+                        strokeWidth={2}
+                        fill="url(#colorDeepfakes)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="genuine"
+                        name="Genuine Content"
+                        stroke="#2668f5"
+                        strokeWidth={2}
+                        fill="url(#colorGenuine)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="weekly" className="h-[300px]">
+                {chartView === "bar" ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorDeepfakes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.2} />
+                        </linearGradient>
+                        <linearGradient id="colorGenuine" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#2668f5" stopOpacity={0.2} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Legend />
+                      <Tooltip 
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Bar dataKey="deepfakes" name="Deepfakes" fill="url(#colorDeepfakes)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="genuine" name="Genuine Content" fill="url(#colorGenuine)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorDeepfakes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.1} />
+                        </linearGradient>
+                        <linearGradient id="colorGenuine" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#2668f5" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Legend />
+                      <Tooltip 
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="deepfakes"
+                        name="Deepfakes"
+                        stroke="#ff6b6b"
+                        strokeWidth={2}
+                        fill="url(#colorDeepfakes)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="genuine"
+                        name="Genuine Content"
+                        stroke="#2668f5"
+                        strokeWidth={2}
+                        fill="url(#colorGenuine)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="yearly" className="h-[300px]">
+                {chartView === "bar" ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorDeepfakes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.2} />
+                        </linearGradient>
+                        <linearGradient id="colorGenuine" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#2668f5" stopOpacity={0.2} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Legend />
+                      <Tooltip 
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Bar dataKey="deepfakes" name="Deepfakes" fill="url(#colorDeepfakes)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="genuine" name="Genuine Content" fill="url(#colorGenuine)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorDeepfakes" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.1} />
+                        </linearGradient>
+                        <linearGradient id="colorGenuine" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#2668f5" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#2668f5" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Legend />
+                      <Tooltip 
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="deepfakes"
+                        name="Deepfakes"
+                        stroke="#ff6b6b"
+                        strokeWidth={2}
+                        fill="url(#colorDeepfakes)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="genuine"
+                        name="Genuine Content"
+                        stroke="#2668f5"
+                        strokeWidth={2}
+                        fill="url(#colorGenuine)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+              </TabsContent>
+            </>
+          ) : (
+            <>
+              {/* Accuracy view for all tabs */}
+              {["daily", "weekly", "yearly"].map((tab) => (
+                <TabsContent key={tab} value={tab} className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 5 }}>
+                      <defs>
+                        <linearGradient id="colorAccuracy" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis
+                        domain={[50, 100]}
+                        stroke="#888888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={(value) => `${value}%`}
+                      />
+                      <Tooltip 
+                        formatter={(value) => [`${value}%`, 'Detection Accuracy']}
+                        labelStyle={{ color: '#111' }}
+                        contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="accuracy"
+                        name="Detection Accuracy"
+                        stroke="#10b981"
+                        strokeWidth={2}
+                        fill="url(#colorAccuracy)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </TabsContent>
+              ))}
+            </>
+          )}
         </Tabs>
       </CardContent>
     </Card>
