@@ -29,6 +29,31 @@ const Dashboard = () => {
     }, 1500);
   };
 
+  // Handle navigation with separate functions to prevent event bubbling issues
+  const handleNavigateToDetection = () => {
+    navigate('/detection');
+    toast({ 
+      title: "Detection Tool Opened", 
+      description: "Ready to analyze new media content" 
+    });
+  };
+
+  const handleNavigateToAlerts = () => {
+    navigate('/alerts');
+    toast({ 
+      title: "Alert Center Opened", 
+      description: "Viewing recent detection alerts" 
+    });
+  };
+
+  const handleNavigateToAnalytics = () => {
+    navigate('/analytics');
+    toast({ 
+      title: "Analytics Opened", 
+      description: "Viewing detailed detection analytics" 
+    });
+  };
+
   return (
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -63,13 +88,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm" 
                 className="w-full justify-start gap-2" 
-                onClick={() => {
-                  navigate('/detection');
-                  toast({ 
-                    title: "Detection Tool Opened", 
-                    description: "Ready to analyze new media content" 
-                  });
-                }}
+                onClick={handleNavigateToDetection}
               >
                 <Shield className="h-4 w-4" />
                 Analyze New Content
@@ -78,13 +97,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm" 
                 className="w-full justify-start gap-2"
-                onClick={() => {
-                  navigate('/alerts');
-                  toast({ 
-                    title: "Alert Center Opened", 
-                    description: "Viewing recent detection alerts" 
-                  });
-                }}
+                onClick={handleNavigateToAlerts}
               >
                 <AlertTriangle className="h-4 w-4" />
                 View Recent Alerts
@@ -93,13 +106,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm" 
                 className="w-full justify-start gap-2"
-                onClick={() => {
-                  navigate('/analytics');
-                  toast({ 
-                    title: "Analytics Opened", 
-                    description: "Viewing detailed detection analytics" 
-                  });
-                }}
+                onClick={handleNavigateToAnalytics}
               >
                 <BarChart3 className="h-4 w-4" />
                 View Full Analytics

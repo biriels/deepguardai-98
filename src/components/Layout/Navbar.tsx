@@ -37,6 +37,37 @@ const Navbar = () => {
     }
   }, [darkMode]);
 
+  // Handle menu item clicks to prevent immediate closing
+  const handleProfileClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setProfileModalOpen(true);
+  };
+
+  const handleBillingClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setBillingModalOpen(true);
+  };
+
+  const handleApiKeysClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setApiKeysModalOpen(true);
+  };
+
+  const handleTogglePlan = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    togglePlan();
+  };
+
+  const handleSignOut = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    signOut();
+  };
+
   return (
     <>
       <header className="h-16 border-b border-border bg-background flex items-center px-4 sticky top-0 z-10">
@@ -91,7 +122,7 @@ const Navbar = () => {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-56" sideOffset={8}>
                 <DropdownMenuLabel className="flex flex-col">
                   <span>Sam User</span>
                   <span className="text-xs font-normal text-muted-foreground">sam@example.com</span>
@@ -103,20 +134,24 @@ const Navbar = () => {
                   </Badge>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setProfileModalOpen(true)}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleProfileClick}>
                   Profile Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBillingModalOpen(true)}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleBillingClick}>
                   Billing & Subscription
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setApiKeysModalOpen(true)}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleApiKeysClick}>
                   API Keys
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={togglePlan}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleTogglePlan}>
                   Toggle Plan Type
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut} className="text-red-500">
+                <DropdownMenuItem 
+                  onSelect={(e) => e.preventDefault()} 
+                  onClick={handleSignOut} 
+                  className="text-red-500"
+                >
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
