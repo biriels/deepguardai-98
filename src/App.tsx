@@ -1,43 +1,36 @@
 
-import * as React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Detection from "./pages/Detection";
-import Monitoring from "./pages/Monitoring";
-import Team from "./pages/Team";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
-import NotFound from "./pages/NotFound";
-import Alerts from "./pages/Alerts";
-import Analytics from "./pages/Analytics";
+import Monitoring from "./pages/Monitoring";
 import Reports from "./pages/Reports";
+import Alerts from "./pages/Alerts";
+import Detection from "./pages/Detection";
+import Analytics from "./pages/Analytics";
+import Team from "./pages/Team";
+import NotFound from "./pages/NotFound";
+import { Toaster } from "./components/ui/toaster";
+import { UserProvider } from "./contexts/UserContext";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <UserProvider>
+      <Router>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/detection" element={<Detection />} />
-          <Route path="/monitoring" element={<Monitoring />} />
-          <Route path="/team" element={<Team />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/alerts" element={<Alerts />} />
-          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/monitoring" element={<Monitoring />} />
           <Route path="/reports" element={<Reports />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/detection" element={<Detection />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/team" element={<Team />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        <Toaster />
+      </Router>
+    </UserProvider>
+  );
+}
 
 export default App;
