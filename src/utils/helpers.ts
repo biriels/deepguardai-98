@@ -12,3 +12,18 @@ export const toNumber = (value: any): number => {
   }
   return 0;
 };
+
+/**
+ * Compare two values after converting them to numbers
+ * @param a First value
+ * @param b Second value
+ * @returns -1 if a < b, 0 if a === b, 1 if a > b
+ */
+export const compareNumbers = (a: any, b: any): number => {
+  const numA = toNumber(a);
+  const numB = toNumber(b);
+  
+  if (numA < numB) return -1;
+  if (numA > numB) return 1;
+  return 0;
+};

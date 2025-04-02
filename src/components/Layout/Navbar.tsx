@@ -18,9 +18,10 @@ import { ProfileSettingsModal } from "@/components/Profile/SettingsModal";
 import { BillingModal } from "@/components/Profile/BillingModal";
 import { ApiKeysModal } from "@/components/Profile/ApiKeysModal";
 import NotificationDropdown from "@/components/Notifications/NotificationDropdown";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Navbar = () => {
-  const [darkMode, setDarkMode] = React.useState(false);
+  const { darkMode, toggleDarkMode } = useTheme();
   const isMobile = useIsMobile();
   const { userPlan, togglePlan, signOut } = useUser();
   
@@ -29,15 +30,6 @@ const Navbar = () => {
   const [billingModalOpen, setBillingModalOpen] = useState(false);
   const [apiKeysModalOpen, setApiKeysModalOpen] = useState(false);
   
-  // Toggle dark mode
-  React.useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
-
   // Handle menu item clicks to prevent immediate closing
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -85,7 +77,7 @@ const Navbar = () => {
             <Button 
               variant="outline" 
               size="icon"
-              onClick={() => setDarkMode(!darkMode)}
+              onClick={toggleDarkMode}
             >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
