@@ -10,7 +10,8 @@ import {
   Home, 
   MonitorPlay, 
   FileText,
-  Users
+  Users,
+  FileCode
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -25,6 +26,7 @@ const Sidebar = () => {
     { name: "Analytics", icon: BarChart3, path: "/analytics" },
     { name: "Alerts", icon: AlertCircle, path: "/alerts" },
     { name: "Team", icon: Users, path: "/team" },
+    { name: "API Docs", icon: FileCode, path: "/api-docs" },
     { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
