@@ -10,11 +10,44 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { BellRing, Globe, UserRound, ShieldCheck, Mail, BellPlus, Moon, Sun, Lock, Key } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const Settings: React.FC = () => {
+  const { toast } = useToast();
+  const { darkMode, toggleDarkMode } = useTheme();
+
+  const handleSaveGeneral = () => {
+    toast({
+      title: "Settings Saved",
+      description: "Your general settings have been updated successfully."
+    });
+  };
+
+  const handleSaveNotifications = () => {
+    toast({
+      title: "Notification Preferences Saved",
+      description: "Your notification settings have been updated successfully."
+    });
+  };
+
+  const handlePasswordUpdate = () => {
+    toast({
+      title: "Password Updated",
+      description: "Your password has been changed successfully."
+    });
+  };
+
+  const handleGenerateApiKey = () => {
+    toast({
+      title: "API Key Generated",
+      description: "Your new API key has been created successfully."
+    });
+  };
+
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-[1200px] mx-auto px-4 sm:px-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
           <p className="text-muted-foreground">
@@ -23,7 +56,7 @@ const Settings: React.FC = () => {
         </div>
 
         <Tabs defaultValue="general" className="space-y-4">
-          <TabsList>
+          <TabsList className="flex flex-wrap mb-2">
             <TabsTrigger value="general" className="flex items-center gap-2">
               <UserRound className="h-4 w-4" />
               <span>General</span>
@@ -75,7 +108,7 @@ const Settings: React.FC = () => {
 
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Preferences</h3>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="space-y-0.5">
                       <Label htmlFor="appearance">Appearance</Label>
                       <div className="text-sm text-muted-foreground">
@@ -84,19 +117,23 @@ const Settings: React.FC = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Sun className="h-4 w-4" />
-                      <Switch id="appearance" />
+                      <Switch 
+                        id="appearance" 
+                        checked={darkMode}
+                        onCheckedChange={toggleDarkMode}
+                      />
                       <Moon className="h-4 w-4" />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="space-y-0.5">
                       <Label htmlFor="language">Language</Label>
                       <div className="text-sm text-muted-foreground">
                         Select your preferred language
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Button variant="outline" size="sm" className="flex gap-2 items-center">
+                    <div>
+                      <Button variant="outline" size="sm" className="flex gap-2 items-center w-full sm:w-auto">
                         <Globe className="h-4 w-4" />
                         <span>English (US)</span>
                       </Button>
@@ -104,8 +141,8 @@ const Settings: React.FC = () => {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button>Save Changes</Button>
+              <CardFooter className="flex justify-end">
+                <Button onClick={handleSaveGeneral} className="w-full sm:w-auto">Save Changes</Button>
               </CardFooter>
             </Card>
           </TabsContent>
@@ -123,7 +160,7 @@ const Settings: React.FC = () => {
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Email Notifications</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <Label htmlFor="security-alerts">Security Alerts</Label>
                         <p className="text-sm text-muted-foreground">
@@ -132,7 +169,7 @@ const Settings: React.FC = () => {
                       </div>
                       <Switch id="security-alerts" defaultChecked />
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <Label htmlFor="detection-reports">Detection Reports</Label>
                         <p className="text-sm text-muted-foreground">
@@ -141,7 +178,7 @@ const Settings: React.FC = () => {
                       </div>
                       <Switch id="detection-reports" defaultChecked />
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <Label htmlFor="newsletters">Product Updates</Label>
                         <p className="text-sm text-muted-foreground">
@@ -156,7 +193,7 @@ const Settings: React.FC = () => {
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">System Notifications</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <Label htmlFor="real-time-alerts">Real-time Alerts</Label>
                         <p className="text-sm text-muted-foreground">
@@ -165,7 +202,7 @@ const Settings: React.FC = () => {
                       </div>
                       <Switch id="real-time-alerts" defaultChecked />
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <Label htmlFor="team-activity">Team Activity</Label>
                         <p className="text-sm text-muted-foreground">
@@ -177,8 +214,8 @@ const Settings: React.FC = () => {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button>Save Preferences</Button>
+              <CardFooter className="flex justify-end">
+                <Button onClick={handleSaveNotifications} className="w-full sm:w-auto">Save Preferences</Button>
               </CardFooter>
             </Card>
           </TabsContent>
@@ -209,32 +246,41 @@ const Settings: React.FC = () => {
                       <Input id="confirm-password" type="password" />
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full md:w-auto">Update Password</Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full md:w-auto"
+                    onClick={handlePasswordUpdate}
+                  >
+                    Update Password
+                  </Button>
                 </div>
 
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Two-factor Authentication</h3>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <p className="font-medium">Two-factor Authentication</p>
                       <p className="text-sm text-muted-foreground">
                         Add an extra layer of security to your account
                       </p>
                     </div>
-                    <Button variant="outline">Enable 2FA</Button>
+                    <Button variant="outline" className="w-full sm:w-auto">Enable 2FA</Button>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Sessions</h3>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <p className="font-medium">Active Sessions</p>
                       <p className="text-sm text-muted-foreground">
                         You're currently logged in on 2 devices
                       </p>
                     </div>
-                    <Button variant="outline" className="text-red-500 hover:text-red-600">
+                    <Button 
+                      variant="outline" 
+                      className="text-red-500 hover:text-red-600 w-full sm:w-auto"
+                    >
                       Log Out All Devices
                     </Button>
                   </div>
@@ -254,44 +300,48 @@ const Settings: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                     <div>
                       <p className="font-medium">Production API Key</p>
                       <p className="text-sm text-muted-foreground">
                         For use in production environments
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Input 
-                        className="w-60"
+                        className="w-full sm:w-60"
                         value="••••••••••••••••••••••" 
                         readOnly
                       />
-                      <Button variant="outline">Reveal</Button>
-                      <Button variant="outline">Copy</Button>
+                      <div className="flex gap-2">
+                        <Button variant="outline" className="flex-1 sm:flex-none">Reveal</Button>
+                        <Button variant="outline" className="flex-1 sm:flex-none">Copy</Button>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                     <div>
                       <p className="font-medium">Development API Key</p>
                       <p className="text-sm text-muted-foreground">
                         For use in development and testing
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Input 
-                        className="w-60"
+                        className="w-full sm:w-60"
                         value="••••••••••••••••••••••" 
                         readOnly
                       />
-                      <Button variant="outline">Reveal</Button>
-                      <Button variant="outline">Copy</Button>
+                      <div className="flex gap-2">
+                        <Button variant="outline" className="flex-1 sm:flex-none">Reveal</Button>
+                        <Button variant="outline" className="flex-1 sm:flex-none">Copy</Button>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                <Button>Generate New API Key</Button>
+                <Button onClick={handleGenerateApiKey} className="w-full sm:w-auto">Generate New API Key</Button>
               </CardContent>
             </Card>
           </TabsContent>

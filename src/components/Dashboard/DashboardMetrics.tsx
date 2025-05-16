@@ -90,14 +90,19 @@ export function DashboardMetrics() {
       if (metric.title === "Deepfakes Detected" && !isPercentage) {
         // Make sure deepfake count is lower than total detections
         const totalDetections = toNumber(metrics[0].value);
-        const value = Math.min(Math.round(Math.random() * totalDetections * 0.4), totalDetections).toString();
+        // Fix the issue with string vs number comparison
+        const randomValue = Math.round(Math.random() * totalDetections * 0.4);
+        // Ensure value is less than total detections using our helper
+        const value = isLessThan(randomValue, totalDetections) ? randomValue : Math.floor(totalDetections * 0.9);
+        const formattedValue = value > 1000 ? value.toLocaleString() : value.toString();
+        
         return {
           ...metric,
-          value: value > 1000 ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value,
+          value: formattedValue,
           change: randomChange,
           positive: isPositive,
           editing: false,
-          tempValue: value
+          tempValue: formattedValue
         };
       }
       

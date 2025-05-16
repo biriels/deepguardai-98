@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from '@/contexts/UserContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Moon, Sun } from 'lucide-react';
 
 interface SettingsModalProps {
   open: boolean;
@@ -23,6 +26,9 @@ interface SettingsModalProps {
 export function ProfileSettingsModal({ open, onOpenChange }: SettingsModalProps) {
   const { toast } = useToast();
   const { email } = useUser();
+  const { darkMode, toggleDarkMode } = useTheme();
+  const [name, setName] = useState("Sam User");
+  const [bio, setBio] = useState("");
   
   const handleSave = () => {
     toast({
@@ -48,7 +54,8 @@ export function ProfileSettingsModal({ open, onOpenChange }: SettingsModalProps)
             </Label>
             <Input
               id="name"
-              defaultValue="Sam User"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -72,7 +79,26 @@ export function ProfileSettingsModal({ open, onOpenChange }: SettingsModalProps)
               placeholder="Write a short bio..."
               className="col-span-3"
               rows={3}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
             />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="theme" className="text-right">
+              Theme
+            </Label>
+            <div className="col-span-3 flex items-center space-x-2">
+              <Sun className="h-4 w-4" />
+              <Switch 
+                id="theme" 
+                checked={darkMode}
+                onCheckedChange={toggleDarkMode}
+              />
+              <Moon className="h-4 w-4" />
+              <span className="text-sm text-muted-foreground ml-2">
+                {darkMode ? 'Dark Mode' : 'Light Mode'}
+              </span>
+            </div>
           </div>
         </div>
         <DialogFooter>
