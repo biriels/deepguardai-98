@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Layout from "@/components/Layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, Upload, Link as LinkIcon, AlertTriangle, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import DeepfakeModerator from "@/components/Detection/DeepfakeModerator";
+import FeedbackButtons from "@/components/Detection/FeedbackButtons";
 
 const Detection = () => {
   const { toast } = useToast();
@@ -17,6 +17,7 @@ const Detection = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<null | {
+    id?: string;
     status: "clean" | "warning" | "fake";
     confidence: number;
     details: string;
@@ -38,6 +39,7 @@ const Detection = () => {
           setAnalyzing(false);
           // Mock result
           setResult({
+            id: `result-${Date.now()}`,
             status: Math.random() > 0.5 ? "fake" : Math.random() > 0.5 ? "warning" : "clean",
             confidence: Math.floor(Math.random() * 30) + 70,
             details: "AI-generated content detected in media elements."
@@ -68,6 +70,7 @@ const Detection = () => {
           setAnalyzing(false);
           // Mock result
           setResult({
+            id: `result-${Date.now()}`,
             status: Math.random() > 0.6 ? "fake" : Math.random() > 0.5 ? "warning" : "clean",
             confidence: Math.floor(Math.random() * 30) + 70,
             details: "Deepfake detection confirmed with high confidence."
@@ -81,6 +84,11 @@ const Detection = () => {
         return prev + 4;
       });
     }, 150);
+  };
+
+  const handleFeedback = (type: "like" | "dislike") => {
+    // In a real application, this would send the feedback to your backend
+    console.log(`Feedback received: ${type} for result ID: ${result?.id}`);
   };
   
   return (
@@ -223,6 +231,9 @@ const Detection = () => {
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Add feedback buttons */}
+                    <FeedbackButtons resultId={result.id} onFeedback={handleFeedback} />
                   </div>
                 )}
               </CardContent>
