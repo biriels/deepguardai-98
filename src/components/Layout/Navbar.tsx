@@ -30,34 +30,24 @@ const Navbar = () => {
   const [billingModalOpen, setBillingModalOpen] = useState(false);
   const [apiKeysModalOpen, setApiKeysModalOpen] = useState(false);
   
-  // Handle menu item clicks to prevent immediate closing
-  const handleProfileClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  // Updated handlers to fix freezing issue - removed preventDefault and stopPropagation
+  const handleProfileClick = () => {
     setProfileModalOpen(true);
   };
 
-  const handleBillingClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleBillingClick = () => {
     setBillingModalOpen(true);
   };
 
-  const handleApiKeysClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleApiKeysClick = () => {
     setApiKeysModalOpen(true);
   };
 
-  const handleTogglePlan = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleTogglePlan = () => {
     togglePlan();
   };
 
-  const handleSignOut = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleSignOut = () => {
     signOut();
   };
 
@@ -125,21 +115,20 @@ const Navbar = () => {
                   </Badge>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleProfileClick}>
+                <DropdownMenuItem onClick={handleProfileClick}>
                   Profile Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleBillingClick}>
+                <DropdownMenuItem onClick={handleBillingClick}>
                   Billing & Subscription
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleApiKeysClick}>
+                <DropdownMenuItem onClick={handleApiKeysClick}>
                   API Keys
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} onClick={handleTogglePlan}>
+                <DropdownMenuItem onClick={handleTogglePlan}>
                   Toggle Plan Type
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  onSelect={(e) => e.preventDefault()} 
                   onClick={handleSignOut} 
                   className="text-red-500"
                 >

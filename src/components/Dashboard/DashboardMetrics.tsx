@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { toNumber } from "@/utils/helpers";
+import { toNumber, isLessThan } from "@/utils/helpers";
 
 export function DashboardMetrics() {
   const { toast } = useToast();
