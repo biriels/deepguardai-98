@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { toNumber } from "@/utils/helpers";
 
 export function DashboardMetrics() {
   const { toast } = useToast();
@@ -88,7 +89,7 @@ export function DashboardMetrics() {
       
       if (metric.title === "Deepfakes Detected" && !isPercentage) {
         // Make sure deepfake count is lower than total detections
-        const totalDetections = parseInt(metrics[0].value.replace(/,/g, ""));
+        const totalDetections = toNumber(metrics[0].value);
         const value = Math.min(Math.round(Math.random() * totalDetections * 0.4), totalDetections).toString();
         return {
           ...metric,

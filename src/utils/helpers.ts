@@ -7,6 +7,7 @@
 export const toNumber = (value: any): number => {
   if (typeof value === 'number') return value;
   if (typeof value === 'string') {
+    // Remove any non-numeric characters except for decimal points and negative signs
     const parsed = parseFloat(value.replace(/[^0-9.-]/g, ''));
     return isNaN(parsed) ? 0 : parsed;
   }
@@ -27,3 +28,24 @@ export const compareNumbers = (a: any, b: any): number => {
   if (numA > numB) return 1;
   return 0;
 };
+
+/**
+ * Safely check if one value is greater than another after converting both to numbers
+ * @param a First value to compare
+ * @param b Second value to compare against
+ * @returns boolean indicating if a is greater than b
+ */
+export const isGreaterThan = (a: any, b: any): boolean => {
+  return toNumber(a) > toNumber(b);
+};
+
+/**
+ * Safely check if one value is less than another after converting both to numbers
+ * @param a First value to compare
+ * @param b Second value to compare against
+ * @returns boolean indicating if a is less than b
+ */
+export const isLessThan = (a: any, b: any): boolean => {
+  return toNumber(a) < toNumber(b);
+};
+
