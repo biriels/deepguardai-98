@@ -1,4 +1,3 @@
-
 import React from "react";
 import Layout from "@/components/Layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,8 +9,10 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { BellRing, Globe, UserRound, ShieldCheck, Mail, BellPlus, Moon, Sun, Lock, Key } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/contexts/ThemeContext";
+import TwoFactorAuth from "@/components/Settings/TwoFactorAuth";
+import { Badge } from "@/components/ui/badge";
 
 const Settings: React.FC = () => {
   const { toast } = useToast();
@@ -222,16 +223,15 @@ const Settings: React.FC = () => {
 
           {/* Security Settings */}
           <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle>Security Settings</CardTitle>
-                <CardDescription>
-                  Manage your password and account security.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Password</h3>
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Password</CardTitle>
+                  <CardDescription>
+                    Change your password to keep your account secure
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="grid gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="current-password">Current Password</Label>
@@ -246,6 +246,8 @@ const Settings: React.FC = () => {
                       <Input id="confirm-password" type="password" />
                     </div>
                   </div>
+                </CardContent>
+                <CardFooter>
                   <Button 
                     variant="outline" 
                     className="w-full md:w-auto"
@@ -253,40 +255,66 @@ const Settings: React.FC = () => {
                   >
                     Update Password
                   </Button>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Two-factor Authentication</h3>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <p className="font-medium">Two-factor Authentication</p>
-                      <p className="text-sm text-muted-foreground">
-                        Add an extra layer of security to your account
-                      </p>
+                </CardFooter>
+              </Card>
+              
+              <TwoFactorAuth />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sessions</CardTitle>
+                  <CardDescription>
+                    Manage your active sessions across devices
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <p className="font-medium">Active Sessions</p>
+                        <p className="text-sm text-muted-foreground">
+                          You're currently logged in on 2 devices
+                        </p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="text-red-500 hover:text-red-600 w-full sm:w-auto"
+                      >
+                        Log Out All Devices
+                      </Button>
                     </div>
-                    <Button variant="outline" className="w-full sm:w-auto">Enable 2FA</Button>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Sessions</h3>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <p className="font-medium">Active Sessions</p>
-                      <p className="text-sm text-muted-foreground">
-                        You're currently logged in on 2 devices
-                      </p>
+                    
+                    <div className="space-y-2">
+                      <div className="p-3 border rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">Current Session</p>
+                            <p className="text-sm text-muted-foreground">
+                              Chrome on Windows • San Francisco, CA
+                            </p>
+                          </div>
+                          <Badge>Current</Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="p-3 border rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">Safari on iPhone</p>
+                            <p className="text-sm text-muted-foreground">
+                              San Francisco, CA • Last active: 2 hours ago
+                            </p>
+                          </div>
+                          <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600">
+                            Revoke
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      className="text-red-500 hover:text-red-600 w-full sm:w-auto"
-                    >
-                      Log Out All Devices
-                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* API Settings */}
