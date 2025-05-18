@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Activity, Bell, BarChart3, Brain, Settings, Users, FileText, AlertTriangle, ArrowRight, BookOpenText, Rocket, Star, Mail } from "lucide-react";
+import { Shield, Activity, Bell, BarChart3, Brain, Settings, Users, FileText, AlertTriangle, ArrowRight, BookOpenText, Rocket, Star, Mail, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
