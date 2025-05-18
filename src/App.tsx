@@ -11,6 +11,7 @@ import Team from "./pages/Team";
 import ApiDocs from "./pages/ApiDocs";
 import NotFound from "./pages/NotFound";
 import Agents from "./pages/Agents";
+import LandingPage from "./pages/LandingPage";
 import { Toaster } from "./components/ui/toaster";
 import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -23,7 +24,8 @@ function App() {
         <NotificationProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/monitoring" element={<Monitoring />} />
               <Route path="/reports" element={<Reports />} />
