@@ -65,31 +65,26 @@ const AgentDashboard = ({ activeAgents, toggleAgent }: AgentDashboardProps) => {
         <TabsContent value="monitoring">
           <MonitoringAgent 
             isActive={activeAgents.monitoring}
-            onToggle={() => toggleAgent('monitoring')}
           />
         </TabsContent>
         <TabsContent value="decision">
           <DecisionAgent 
             isActive={activeAgents.decision}
-            onToggle={() => toggleAgent('decision')}
           />
         </TabsContent>
         <TabsContent value="notification">
           <NotificationAgent 
             isActive={activeAgents.notification}
-            onToggle={() => toggleAgent('notification')}
           />
         </TabsContent>
         <TabsContent value="learning">
           <LearningAgent 
             isActive={activeAgents.learning}
-            onToggle={() => toggleAgent('learning')}
           />
         </TabsContent>
         <TabsContent value="reporting">
           <ReportingAgent 
             isActive={activeAgents.reporting}
-            onToggle={() => toggleAgent('reporting')}
           />
         </TabsContent>
       </Tabs>
