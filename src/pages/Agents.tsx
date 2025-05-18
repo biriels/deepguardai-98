@@ -23,6 +23,7 @@ const Agents = () => {
       [agentType]: !prev[agentType]
     }));
     
+    // Show toast notification when an agent is toggled
     toast({
       title: `Agent ${activeAgents[agentType] ? "Disabled" : "Enabled"}`,
       description: `${agentType.charAt(0).toUpperCase() + agentType.slice(1)} agent has been ${activeAgents[agentType] ? "disabled" : "enabled"}.`,
@@ -36,7 +37,10 @@ const Agents = () => {
           title="AI Agents" 
           description="Configure and manage your autonomous deepfake detection agents" 
         />
-        <AgentDashboard />
+        <AgentDashboard 
+          activeAgents={activeAgents} 
+          toggleAgent={toggleAgent}
+        />
       </div>
     </Layout>
   );

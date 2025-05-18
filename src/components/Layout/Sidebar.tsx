@@ -11,7 +11,8 @@ import {
   MonitorPlay, 
   FileText,
   Users,
-  FileCode
+  FileCode,
+  Brain
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -19,12 +20,13 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = React.useState(false);
 
   const navItems = [
-    { name: "Dashboard", icon: Home, path: "/" },
+    { name: "Dashboard", icon: Home, path: "/dashboard" },
     { name: "Detection", icon: Shield, path: "/detection" },
     { name: "Monitoring", icon: MonitorPlay, path: "/monitoring" },
     { name: "Reports", icon: FileText, path: "/reports" },
     { name: "Analytics", icon: BarChart3, path: "/analytics" },
     { name: "Alerts", icon: AlertCircle, path: "/alerts" },
+    { name: "Agents", icon: Brain, path: "/agents" },
     { name: "Team", icon: Users, path: "/team" },
     { name: "API Docs", icon: FileCode, path: "/api-docs" },
     { name: "Settings", icon: Settings, path: "/settings" },

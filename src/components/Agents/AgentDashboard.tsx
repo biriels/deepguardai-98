@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,21 +10,29 @@ import MonitoringAgent from "./MonitoringAgent";
 import NotificationAgent from "./NotificationAgent";
 import ReportingAgent from "./ReportingAgent";
 import LearningAgent from "./LearningAgent";
+import { useToast } from "@/hooks/use-toast";
 
-const AgentDashboard = () => {
-  const [activeAgents, setActiveAgents] = useState({
-    monitoring: true,
-    decision: true,
-    notification: false,
-    learning: true,
-    reporting: true
-  });
+interface AgentDashboardProps {
+  activeAgents: {
+    monitoring: boolean;
+    decision: boolean;
+    notification: boolean;
+    learning: boolean;
+    reporting: boolean;
+  };
+  toggleAgent: (agent: keyof typeof activeAgents) => void;
+}
 
-  const toggleAgent = (agent: keyof typeof activeAgents) => {
-    setActiveAgents(prev => ({
-      ...prev,
-      [agent]: !prev[agent]
-    }));
+const AgentDashboard = ({ activeAgents, toggleAgent }: AgentDashboardProps) => {
+  const { toast } = useToast();
+  const [deployDialogOpen, setDeployDialogOpen] = React.useState(false);
+
+  const handleDeployNewAgent = () => {
+    setDeployDialogOpen(true);
+    toast({
+      title: "Feature Coming Soon",
+      description: "The ability to deploy new agents will be available in a future update.",
+    });
   };
 
   return (
@@ -40,7 +48,7 @@ const AgentDashboard = () => {
           <Badge variant="outline" className="text-sm py-1">
             {Object.values(activeAgents).filter(Boolean).length} Active Agents
           </Badge>
-          <Button variant="default" size="sm">
+          <Button variant="default" size="sm" onClick={handleDeployNewAgent}>
             Deploy New Agent
           </Button>
         </div>
@@ -55,19 +63,34 @@ const AgentDashboard = () => {
           <TabsTrigger value="reporting">Reporting</TabsTrigger>
         </TabsList>
         <TabsContent value="monitoring">
-          <MonitoringAgent isActive={activeAgents.monitoring} />
+          <MonitoringAgent 
+            isActive={activeAgents.monitoring}
+            onToggle={() => toggleAgent('monitoring')}
+          />
         </TabsContent>
         <TabsContent value="decision">
-          <DecisionAgent isActive={activeAgents.decision} />
+          <DecisionAgent 
+            isActive={activeAgents.decision}
+            onToggle={() => toggleAgent('decision')}
+          />
         </TabsContent>
         <TabsContent value="notification">
-          <NotificationAgent isActive={activeAgents.notification} />
+          <NotificationAgent 
+            isActive={activeAgents.notification}
+            onToggle={() => toggleAgent('notification')}
+          />
         </TabsContent>
         <TabsContent value="learning">
-          <LearningAgent isActive={activeAgents.learning} />
+          <LearningAgent 
+            isActive={activeAgents.learning}
+            onToggle={() => toggleAgent('learning')}
+          />
         </TabsContent>
         <TabsContent value="reporting">
-          <ReportingAgent isActive={activeAgents.reporting} />
+          <ReportingAgent 
+            isActive={activeAgents.reporting}
+            onToggle={() => toggleAgent('reporting')}
+          />
         </TabsContent>
       </Tabs>
     </div>
