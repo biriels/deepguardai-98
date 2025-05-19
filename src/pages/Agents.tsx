@@ -4,6 +4,8 @@ import Layout from "@/components/Layout/Layout";
 import { Heading } from "@/components/ui/heading";
 import AgentDashboard from "@/components/Agents/AgentDashboard";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AgentBuilder from "@/components/Agents/AgentBuilder";
 
 const Agents = () => {
   const { toast } = useToast();
@@ -30,6 +32,13 @@ const Agents = () => {
     });
   };
 
+  const handleAgentCreated = (agentName: string) => {
+    toast({
+      title: "New Agent Created",
+      description: `${agentName} has been successfully added to your agents.`,
+    });
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -37,10 +46,24 @@ const Agents = () => {
           title="AI Agents" 
           description="Configure and manage your autonomous deepfake detection agents" 
         />
-        <AgentDashboard 
-          activeAgents={activeAgents} 
-          toggleAgent={toggleAgent}
-        />
+        
+        <Tabs defaultValue="dashboard" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="dashboard">Agent Dashboard</TabsTrigger>
+            <TabsTrigger value="builder">Agent Builder</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="dashboard" className="space-y-4">
+            <AgentDashboard 
+              activeAgents={activeAgents} 
+              toggleAgent={toggleAgent}
+            />
+          </TabsContent>
+          
+          <TabsContent value="builder">
+            <AgentBuilder onAgentCreated={handleAgentCreated} />
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );
