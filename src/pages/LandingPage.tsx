@@ -95,7 +95,7 @@ const LandingPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700">
-                <Link to="/dashboard">Launch Dashboard</Link>
+                <Link to="/auth">Get Started</Link>
               </Button>
               <Button size="lg" variant="outline" className="backdrop-blur-sm bg-white/10 border-white/20">
                 <Link to="/detection">Try Detection</Link>
@@ -335,7 +335,7 @@ const LandingPage = () => {
             Join leading organizations worldwide using DeepGuard AI to protect their digital content integrity
           </p>
           <Button asChild size="lg" className="px-8 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700">
-            <Link to="/dashboard">Go to Dashboard</Link>
+            <Link to="/auth">Get Started</Link>
           </Button>
         </div>
       </section>

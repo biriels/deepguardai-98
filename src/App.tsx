@@ -12,6 +12,7 @@ import ApiDocs from "./pages/ApiDocs";
 import NotFound from "./pages/NotFound";
 import Agents from "./pages/Agents";
 import LandingPage from "./pages/LandingPage";
+import Auth from "./pages/Auth";
 import { Toaster } from "./components/ui/toaster";
 import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -35,6 +36,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/api-docs" element={<ApiDocs />} />
               <Route path="/agents" element={<Agents />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
