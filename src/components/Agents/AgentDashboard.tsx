@@ -22,7 +22,7 @@ interface AgentDashboardProps {
     learning: boolean;
     reporting: boolean;
   };
-  toggleAgent: (agentType: keyof typeof activeAgents) => void;
+  toggleAgent: (agentType: keyof AgentDashboardProps["activeAgents"]) => void;
 }
 
 const AgentDashboard: React.FC<AgentDashboardProps> = ({

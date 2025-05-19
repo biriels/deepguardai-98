@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,7 +93,12 @@ const LandingPage = () => {
               Combat digital misinformation with our powerful deepfake detection platform powered by autonomous AI agents
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700">
+              {/* Update the button text to "Get Started" */}
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700"
+                asChild
+              >
                 <Link to="/auth">Get Started</Link>
               </Button>
               <Button size="lg" variant="outline" className="backdrop-blur-sm bg-white/10 border-white/20">
