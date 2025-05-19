@@ -9,9 +9,10 @@ import { Switch } from "@/components/ui/switch";
 
 interface LearningAgentProps {
   isActive: boolean;
+  onToggle: () => void;
 }
 
-const LearningAgent = ({ isActive }: LearningAgentProps) => {
+const LearningAgent = ({ isActive, onToggle }: LearningAgentProps) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -24,10 +25,11 @@ const LearningAgent = ({ isActive }: LearningAgentProps) => {
             Improves detection accuracy over time based on feedback
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Badge variant={isActive ? "default" : "outline"}>
             {isActive ? "Active" : "Inactive"}
           </Badge>
+          <Switch checked={isActive} onCheckedChange={onToggle} />
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -105,7 +107,7 @@ const LearningAgent = ({ isActive }: LearningAgentProps) => {
                   <div className="text-sm font-medium">Auto-Learning</div>
                   <div className="text-xs text-muted-foreground">Automatically improve based on feedback</div>
                 </div>
-                <Switch checked={isActive} />
+                <Switch checked={isActive} onCheckedChange={onToggle} />
               </div>
               
               <div className="flex items-center justify-between border rounded p-3">
@@ -113,7 +115,7 @@ const LearningAgent = ({ isActive }: LearningAgentProps) => {
                   <div className="text-sm font-medium">Feedback Collection</div>
                   <div className="text-xs text-muted-foreground">Gather user feedback on detections</div>
                 </div>
-                <Switch checked={true} />
+                <Switch checked={true} disabled={!isActive} />
               </div>
               
               <div className="flex items-center justify-between border rounded p-3">
@@ -121,7 +123,7 @@ const LearningAgent = ({ isActive }: LearningAgentProps) => {
                   <div className="text-sm font-medium">Daily Model Updates</div>
                   <div className="text-xs text-muted-foreground">Update model parameters daily</div>
                 </div>
-                <Switch checked={false} />
+                <Switch checked={false} disabled={!isActive} />
               </div>
             </div>
             

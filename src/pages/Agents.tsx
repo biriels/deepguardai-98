@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 const Agents = () => {
   const { toast } = useToast();
   
-  // Agent state and toggle function should be declared here and passed to AgentDashboard
   const [activeAgents, setActiveAgents] = React.useState({
     monitoring: true,
     decision: true,
@@ -25,8 +24,9 @@ const Agents = () => {
     
     // Show toast notification when an agent is toggled
     toast({
-      title: `Agent ${activeAgents[agentType] ? "Disabled" : "Enabled"}`,
+      title: `${agentType.charAt(0).toUpperCase() + agentType.slice(1)} Agent ${activeAgents[agentType] ? "Disabled" : "Enabled"}`,
       description: `${agentType.charAt(0).toUpperCase() + agentType.slice(1)} agent has been ${activeAgents[agentType] ? "disabled" : "enabled"}.`,
+      variant: activeAgents[agentType] ? "destructive" : "default"
     });
   };
 

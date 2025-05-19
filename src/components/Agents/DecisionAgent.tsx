@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertTriangle, ArrowRight, Check, Sliders } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 interface DecisionAgentProps {
   isActive: boolean;
+  onToggle: () => void;
 }
 
-const DecisionAgent: React.FC<DecisionAgentProps> = ({ isActive }) => {
+const DecisionAgent: React.FC<DecisionAgentProps> = ({ isActive, onToggle }) => {
   return (
     <Card>
       <CardHeader>
@@ -23,9 +25,12 @@ const DecisionAgent: React.FC<DecisionAgentProps> = ({ isActive }) => {
               Analyzes and classifies detected content
             </CardDescription>
           </div>
-          <Badge variant={isActive ? "default" : "outline"}>
-            {isActive ? "Active" : "Inactive"}
-          </Badge>
+          <div className="flex items-center gap-3">
+            <Badge variant={isActive ? "default" : "outline"}>
+              {isActive ? "Active" : "Inactive"}
+            </Badge>
+            <Switch checked={isActive} onCheckedChange={onToggle} />
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -44,7 +49,7 @@ const DecisionAgent: React.FC<DecisionAgentProps> = ({ isActive }) => {
               <span className="text-sm">Review Threshold</span>
               <span className="text-sm font-medium">75%</span>
             </div>
-            <Button variant="outline" size="sm" className="w-full flex gap-2">
+            <Button variant="outline" size="sm" className="w-full flex gap-2" disabled={!isActive}>
               <Sliders className="h-4 w-4" />
               <span>Adjust Thresholds</span>
             </Button>
@@ -84,7 +89,7 @@ const DecisionAgent: React.FC<DecisionAgentProps> = ({ isActive }) => {
               </div>
             )}
           </div>
-          <Button variant="link" size="sm" className="mt-2 w-full flex items-center justify-center gap-1">
+          <Button variant="link" size="sm" className="mt-2 w-full flex items-center justify-center gap-1" disabled={!isActive}>
             <span>View All Decisions</span>
             <ArrowRight className="h-4 w-4" />
           </Button>

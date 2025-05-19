@@ -10,9 +10,10 @@ import { useNotifications } from "@/contexts/NotificationContext";
 
 interface NotificationAgentProps {
   isActive: boolean;
+  onToggle: () => void;
 }
 
-const NotificationAgent = ({ isActive }: NotificationAgentProps) => {
+const NotificationAgent = ({ isActive, onToggle }: NotificationAgentProps) => {
   const { state, addNotification } = useNotifications();
   
   const handleTestNotification = () => {
@@ -35,10 +36,11 @@ const NotificationAgent = ({ isActive }: NotificationAgentProps) => {
             Alerts stakeholders about suspicious content and detection activity
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Badge variant={isActive ? "default" : "outline"}>
             {isActive ? "Active" : "Inactive"}
           </Badge>
+          <Switch checked={isActive} onCheckedChange={onToggle} />
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -56,7 +58,7 @@ const NotificationAgent = ({ isActive }: NotificationAgentProps) => {
               <p className="text-xs text-muted-foreground">
                 Send notifications within the application interface
               </p>
-              <Button size="sm" variant="outline" className="w-full" onClick={handleTestNotification}>
+              <Button size="sm" variant="outline" className="w-full" onClick={handleTestNotification} disabled={!isActive}>
                 Test Notification
               </Button>
             </div>
@@ -72,7 +74,7 @@ const NotificationAgent = ({ isActive }: NotificationAgentProps) => {
               <p className="text-xs text-muted-foreground">
                 Send email notifications to registered users
               </p>
-              <Button size="sm" variant="outline" className="w-full">
+              <Button size="sm" variant="outline" className="w-full" disabled={!isActive}>
                 Test Email
               </Button>
             </div>
@@ -88,7 +90,7 @@ const NotificationAgent = ({ isActive }: NotificationAgentProps) => {
               <p className="text-xs text-muted-foreground">
                 Send notifications to configured Slack channels
               </p>
-              <Button size="sm" variant="outline" className="w-full" disabled>
+              <Button size="sm" variant="outline" className="w-full" disabled={true}>
                 Configure
               </Button>
             </div>
@@ -119,7 +121,7 @@ const NotificationAgent = ({ isActive }: NotificationAgentProps) => {
                   <TableCell>{rule.channels.join(", ")}</TableCell>
                   <TableCell>{rule.recipients}</TableCell>
                   <TableCell className="text-right">
-                    <Switch checked={rule.enabled} />
+                    <Switch checked={rule.enabled} disabled={!isActive} />
                   </TableCell>
                 </TableRow>
               ))}

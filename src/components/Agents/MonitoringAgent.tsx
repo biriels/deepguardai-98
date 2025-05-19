@@ -11,15 +11,29 @@ import { Progress } from "@/components/ui/progress";
 
 interface MonitoringAgentProps {
   isActive: boolean;
+  onToggle: () => void;
 }
 
-const MonitoringAgent = ({ isActive }: MonitoringAgentProps) => {
+const MonitoringAgent = ({ isActive, onToggle }: MonitoringAgentProps) => {
   const [sources, setSources] = useState([
     { id: 1, name: "Twitter", status: "monitoring", progress: 68, lastScan: "10 min ago", contentCount: 1245 },
     { id: 2, name: "Instagram", status: "monitoring", progress: 92, lastScan: "5 min ago", contentCount: 872 },
     { id: 3, name: "YouTube", status: "paused", progress: 0, lastScan: "1 hour ago", contentCount: 367 },
     { id: 4, name: "News Sites", status: "monitoring", progress: 45, lastScan: "2 min ago", contentCount: 538 },
   ]);
+
+  const handleToggleSource = (id: number) => {
+    setSources(sources.map(source => {
+      if (source.id === id) {
+        return {
+          ...source,
+          status: source.status === "monitoring" ? "paused" : "monitoring",
+          progress: source.status === "monitoring" ? 0 : Math.floor(Math.random() * 100)
+        };
+      }
+      return source;
+    }));
+  };
 
   return (
     <Card>
@@ -66,7 +80,7 @@ const MonitoringAgent = ({ isActive }: MonitoringAgentProps) => {
                   <div className="text-sm font-medium">Continuous Monitoring</div>
                   <div className="text-xs text-muted-foreground">Scan in real-time</div>
                 </div>
-                <Switch checked={isActive} />
+                <Switch checked={isActive} onCheckedChange={onToggle} />
               </div>
               <div className="flex items-center justify-between space-x-2 border rounded p-3">
                 <div className="space-y-0.5">
@@ -107,7 +121,11 @@ const MonitoringAgent = ({ isActive }: MonitoringAgentProps) => {
                   <TableCell className="hidden md:table-cell">{source.lastScan}</TableCell>
                   <TableCell className="hidden md:table-cell">{source.contentCount}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleToggleSource(source.id)}
+                    >
                       {source.status === "monitoring" ? "Pause" : "Resume"}
                     </Button>
                   </TableCell>
