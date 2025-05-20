@@ -12,8 +12,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerTrigger } from "@/components/ui/drawer";
 
+// Define agent template type
+interface AgentTemplate {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ElementType;
+  complexity: string;
+  category: string;
+  role: string;
+}
+
+// Define parameters interface for type safety
+interface AgentParameters {
+  threshold: number;
+  mode: string;
+  platforms: string[];
+  capabilities: string[];
+  response: string;
+  learningMode?: string;
+}
+
+// Define agent configuration interface
+interface AgentConfig {
+  name: string;
+  description: string;
+  parameters: AgentParameters;
+}
+
 // Specialized deepfake detection agent templates
-const agentTemplates = [
+const agentTemplates: AgentTemplate[] = [
   {
     id: "vision-sentinel",
     name: "VisionSentinel",
@@ -78,10 +106,16 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
   const { toast } = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [step, setStep] = useState<"select" | "configure">("select");
-  const [agentConfig, setAgentConfig] = useState({
+  const [agentConfig, setAgentConfig] = useState<AgentConfig>({
     name: "",
     description: "",
-    parameters: {}
+    parameters: {
+      threshold: 75,
+      mode: "Real-time Scanning",
+      platforms: ["YouTube", "Instagram", "TikTok"],
+      capabilities: ["Face Manipulation", "Lip Sync"],
+      response: "Flag for Review"
+    }
   });
   const [showPreview, setShowPreview] = useState(false);
   const [isTestingMode, setIsTestingMode] = useState(false);
@@ -155,14 +189,20 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
     setAgentConfig({
       name: "",
       description: "",
-      parameters: {}
+      parameters: {
+        threshold: 75,
+        mode: "Real-time Scanning",
+        platforms: [],
+        capabilities: [],
+        response: "Flag for Review"
+      }
     });
     setShowPreview(false);
     setIsTestingMode(false);
     setTestResults(null);
   };
 
-  const updateParameter = (key: string, value: any) => {
+  const updateParameter = (key: keyof AgentParameters, value: any) => {
     setAgentConfig(prev => ({
       ...prev,
       parameters: {
@@ -219,7 +259,7 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <Icon className="h-8 w-8 text-primary" />
-            <Badge variant="outline">{agentConfig.parameters.threshold || 75}% Threshold</Badge>
+            <Badge variant="outline">{agentConfig.parameters.threshold}% Threshold</Badge>
           </div>
           <CardTitle>{agentConfig.name}</CardTitle>
           <CardDescription>{agentConfig.description}</CardDescription>
@@ -228,19 +268,19 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Mode:</span>
-              <span className="font-medium">{agentConfig.parameters.mode || "Real-time Scanning"}</span>
+              <span className="font-medium">{agentConfig.parameters.mode}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Platforms:</span>
-              <span className="font-medium">{Array.isArray(agentConfig.parameters.platforms) ? agentConfig.parameters.platforms.length : 0} configured</span>
+              <span className="font-medium">{agentConfig.parameters.platforms.length} configured</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Detection capabilities:</span>
-              <span className="font-medium">{Array.isArray(agentConfig.parameters.capabilities) ? agentConfig.parameters.capabilities.length : 0} enabled</span>
+              <span className="font-medium">{agentConfig.parameters.capabilities.length} enabled</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Response action:</span>
-              <span className="font-medium">{agentConfig.parameters.response || "Flag for Review"}</span>
+              <span className="font-medium">{agentConfig.parameters.response}</span>
             </div>
           </div>
         </CardContent>
@@ -367,11 +407,11 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
                             type="range" 
                             min="0" 
                             max="100" 
-                            value={agentConfig.parameters.threshold || 75}
+                            value={agentConfig.parameters.threshold}
                             onChange={(e) => updateParameter('threshold', parseInt(e.target.value))}
                             className="flex-1"
                           />
-                          <span className="text-sm font-medium">{agentConfig.parameters.threshold || 75}%</span>
+                          <span className="text-sm font-medium">{agentConfig.parameters.threshold}%</span>
                         </div>
                         <p className="text-xs text-muted-foreground">
                           Set confidence threshold for deepfake detection alerts
@@ -383,7 +423,7 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
                         <select 
                           id="processing-mode"
                           className="w-full p-2 border rounded-md"
-                          value={agentConfig.parameters.mode || "Real-time Scanning"}
+                          value={agentConfig.parameters.mode}
                           onChange={(e) => updateParameter('mode', e.target.value)}
                         >
                           <option>Real-time Scanning</option>
@@ -405,13 +445,8 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
                               <input 
                                 type="checkbox" 
                                 className="rounded border-gray-300"
-                                checked={Array.isArray(agentConfig.parameters.platforms) && agentConfig.parameters.platforms.includes(platform)}
+                                checked={agentConfig.parameters.platforms.includes(platform)}
                                 onChange={(e) => {
-                                  if (!Array.isArray(agentConfig.parameters.platforms)) {
-                                    updateParameter('platforms', e.target.checked ? [platform] : []);
-                                    return;
-                                  }
-                                  
                                   if (e.target.checked) {
                                     updateParameter('platforms', [...agentConfig.parameters.platforms, platform]);
                                   } else {
@@ -436,13 +471,8 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
                               <input 
                                 type="checkbox"
                                 className="rounded border-gray-300"
-                                checked={Array.isArray(agentConfig.parameters.capabilities) && agentConfig.parameters.capabilities.includes(capability)}
+                                checked={agentConfig.parameters.capabilities.includes(capability)}
                                 onChange={(e) => {
-                                  if (!Array.isArray(agentConfig.parameters.capabilities)) {
-                                    updateParameter('capabilities', e.target.checked ? [capability] : []);
-                                    return;
-                                  }
-                                  
                                   if (e.target.checked) {
                                     updateParameter('capabilities', [...agentConfig.parameters.capabilities, capability]);
                                   } else {
@@ -463,7 +493,7 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
                         <select 
                           id="auto-response"
                           className="w-full p-2 border rounded-md"
-                          value={agentConfig.parameters.response || "Flag for Review"}
+                          value={agentConfig.parameters.response}
                           onChange={(e) => updateParameter('response', e.target.value)}
                         >
                           <option>Flag for Review</option>
@@ -564,12 +594,12 @@ const AgentBuilder: React.FC<AgentBuilderProps> = ({ onAgentCreated }) => {
                       <div>
                         <div className="flex justify-between text-sm mb-1">
                           <span>Detection Accuracy</span>
-                          <span>{75 + (agentConfig.parameters.threshold ? Math.min(15, (agentConfig.parameters.threshold - 50) / 3) : 8)}%</span>
+                          <span>{75 + Math.min(15, (agentConfig.parameters.threshold - 50) / 3)}%</span>
                         </div>
                         <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
                           <div 
                             className="bg-primary h-full" 
-                            style={{ width: `${75 + (agentConfig.parameters.threshold ? Math.min(15, (agentConfig.parameters.threshold - 50) / 3) : 8)}%` }}
+                            style={{ width: `${75 + Math.min(15, (agentConfig.parameters.threshold - 50) / 3)}%` }}
                           ></div>
                         </div>
                       </div>
