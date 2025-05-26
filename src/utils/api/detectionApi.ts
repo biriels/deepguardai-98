@@ -18,9 +18,12 @@ export interface DetectionResult {
 export const detectionApi = {
   // Create a new detection result
   createDetection: async (detection: Omit<DetectionResult, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
     const { data, error } = await supabase
       .from('detection_results')
-      .insert([detection])
+      .insert([{ ...detection, user_id: user.id }])
       .select()
       .single();
 

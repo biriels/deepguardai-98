@@ -16,9 +16,12 @@ export interface ApiUsage {
 export const apiUsageApi = {
   // Log API usage
   logUsage: async (usage: Omit<ApiUsage, 'id' | 'user_id' | 'created_at'>) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
     const { data, error } = await supabase
       .from('api_usage')
-      .insert([usage])
+      .insert([{ ...usage, user_id: user.id }])
       .select()
       .single();
 
