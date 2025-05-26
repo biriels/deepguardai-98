@@ -65,6 +65,84 @@ export type Database = {
           },
         ]
       }
+      api_usage: {
+        Row: {
+          created_at: string | null
+          endpoint: string
+          id: string
+          method: string
+          request_size_bytes: number | null
+          response_size_bytes: number | null
+          response_time_ms: number | null
+          status_code: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          method: string
+          request_size_bytes?: number | null
+          response_size_bytes?: number | null
+          response_time_ms?: number | null
+          status_code?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          method?: string
+          request_size_bytes?: number | null
+          response_size_bytes?: number | null
+          response_time_ms?: number | null
+          status_code?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      detection_results: {
+        Row: {
+          analysis_details: Json | null
+          confidence_level: string | null
+          created_at: string | null
+          detection_score: number
+          file_name: string
+          file_url: string | null
+          id: string
+          is_deepfake: boolean
+          processing_time_ms: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis_details?: Json | null
+          confidence_level?: string | null
+          created_at?: string | null
+          detection_score: number
+          file_name: string
+          file_url?: string | null
+          id?: string
+          is_deepfake: boolean
+          processing_time_ms?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis_details?: Json | null
+          confidence_level?: string | null
+          created_at?: string | null
+          detection_score?: number
+          file_name?: string
+          file_url?: string | null
+          id?: string
+          is_deepfake?: boolean
+          processing_time_ms?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       forex_pairs: {
         Row: {
           ask_price: number | null
@@ -163,6 +241,42 @@ export type Database = {
           },
         ]
       }
+      monitoring_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          metadata: Json | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          metadata?: Json | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          metadata?: Json | null
+          severity?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       price_history: {
         Row: {
           close_price: number
@@ -210,6 +324,33 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       technical_indicators: {
         Row: {
           calculated_at: string
@@ -248,15 +389,42 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "premium" | "standard"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -371,6 +539,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "premium", "standard"],
+    },
   },
 } as const

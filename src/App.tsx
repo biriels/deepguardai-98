@@ -14,35 +14,79 @@ import Agents from "./pages/Agents";
 import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
 import { Toaster } from "./components/ui/toaster";
+import { AuthProvider } from "./contexts/AuthContext";
 import { UserProvider } from "./contexts/UserContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (
     <ThemeProvider>
-      <UserProvider>
-        <NotificationProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/monitoring" element={<Monitoring />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/alerts" element={<Alerts />} />
-              <Route path="/detection" element={<Detection />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/api-docs" element={<ApiDocs />} />
-              <Route path="/agents" element={<Agents />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Toaster />
-          </Router>
-        </NotificationProvider>
-      </UserProvider>
+      <AuthProvider>
+        <UserProvider>
+          <NotificationProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/settings" element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                } />
+                <Route path="/monitoring" element={
+                  <ProtectedRoute>
+                    <Monitoring />
+                  </ProtectedRoute>
+                } />
+                <Route path="/reports" element={
+                  <ProtectedRoute>
+                    <Reports />
+                  </ProtectedRoute>
+                } />
+                <Route path="/alerts" element={
+                  <ProtectedRoute>
+                    <Alerts />
+                  </ProtectedRoute>
+                } />
+                <Route path="/detection" element={
+                  <ProtectedRoute>
+                    <Detection />
+                  </ProtectedRoute>
+                } />
+                <Route path="/analytics" element={
+                  <ProtectedRoute>
+                    <Analytics />
+                  </ProtectedRoute>
+                } />
+                <Route path="/team" element={
+                  <ProtectedRoute>
+                    <Team />
+                  </ProtectedRoute>
+                } />
+                <Route path="/api-docs" element={
+                  <ProtectedRoute>
+                    <ApiDocs />
+                  </ProtectedRoute>
+                } />
+                <Route path="/agents" element={
+                  <ProtectedRoute>
+                    <Agents />
+                  </ProtectedRoute>
+                } />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </Router>
+          </NotificationProvider>
+        </UserProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

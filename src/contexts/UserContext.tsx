@@ -1,6 +1,7 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuthContext } from './AuthContext';
 
 type UserPlan = 'standard' | 'premium';
 
@@ -9,30 +10,42 @@ interface UserContextType {
   togglePlan: () => void;
   signOut: () => void;
   email: string;
+  isAuthenticated: boolean;
+  user: any;
+  profile: any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [userPlan, setUserPlan] = useState<UserPlan>('premium');
   const { toast } = useToast();
+  const { user, profile, userRole, signOut: authSignOut } = useAuthContext();
+  
+  // Determine user plan based on role
+  const userPlan: UserPlan = userRole?.role === 'premium' ? 'premium' : 'standard';
   
   const togglePlan = () => {
     const newPlan = userPlan === 'premium' ? 'standard' : 'premium';
-    setUserPlan(newPlan);
     toast({
-      title: "Plan Updated",
-      description: `You are now on the ${newPlan.charAt(0).toUpperCase() + newPlan.slice(1)} plan.`
+      title: "Plan Update",
+      description: `Plan changes require admin approval. Current plan: ${userPlan}`,
     });
   };
 
-  const signOut = () => {
-    toast({
-      title: "Signed Out",
-      description: "You have been successfully signed out."
-    });
-    // In a real app, this would clear auth tokens, redirect to login, etc.
-    console.log("User signed out");
+  const signOut = async () => {
+    try {
+      await authSignOut();
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out."
+      });
+    } catch (error) {
+      toast({
+        title: "Sign Out Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -40,7 +53,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       userPlan, 
       togglePlan, 
       signOut,
-      email: "sam@example.com" 
+      email: user?.email || profile?.email || "guest@example.com",
+      isAuthenticated: !!user,
+      user,
+      profile
     }}>
       {children}
     </UserContext.Provider>
