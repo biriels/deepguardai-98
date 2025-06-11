@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import DeepfakeModerator from "@/components/Detection/DeepfakeModerator";
 import FeedbackButtons from "@/components/Detection/FeedbackButtons";
 import { ModelSelector } from "@/components/Detection/ModelSelector";
-import { EnhancedResults } from "@/components/Detection/EnhancedResults";
+import { DetailedResults } from "@/components/Detection/DetailedResults";
 import { 
   enhancedDetectionService, 
   EnhancedDetectionResult 
@@ -154,14 +154,14 @@ const Detection = () => {
   return (
     <Layout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <Brain className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2">
+              <Brain className="h-6 h-6 sm:h-8 sm:w-8 text-primary" />
               Enhanced AI Deepfake Detection
             </h1>
-            <p className="text-muted-foreground mt-2">
-              Multi-model ensemble analysis with Together AI, HuggingFace, and specialized detection models
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+              Multi-model ensemble analysis with detailed forensic insights
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -175,7 +175,7 @@ const Detection = () => {
             </Button>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Zap className="h-4 w-4" />
-              <span>Multi-AI Powered</span>
+              <span className="hidden sm:inline">Multi-AI Powered</span>
             </div>
           </div>
         </div>
@@ -196,7 +196,7 @@ const Detection = () => {
           <TabsContent value="detection">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                   <Shield className="h-5 w-5" />
                   Multi-Model AI Analysis
                   {selectedModels.length > 0 && (
@@ -213,7 +213,7 @@ const Detection = () => {
                     <TabsTrigger value="upload">File Upload</TabsTrigger>
                   </TabsList>
                   <TabsContent value="url" className="space-y-4">
-                    <form onSubmit={handleUrlSubmit} className="flex space-x-2">
+                    <form onSubmit={handleUrlSubmit} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                       <div className="relative flex-1">
                         <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -225,17 +225,17 @@ const Detection = () => {
                           disabled={analyzing}
                         />
                       </div>
-                      <Button type="submit" disabled={analyzing || !url}>
+                      <Button type="submit" disabled={analyzing || !url} className="w-full sm:w-auto">
                         {analyzing ? "Analyzing..." : "Enhanced Analysis"}
                       </Button>
                     </form>
                   </TabsContent>
                   <TabsContent value="upload" className="space-y-4">
-                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                      <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                    <div className="border-2 border-dashed border-border rounded-lg p-6 sm:p-8 text-center">
+                      <Upload className="h-8 h-8 sm:h-10 sm:w-10 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-medium">Enhanced Multi-Model Analysis</h3>
                       <p className="text-sm text-muted-foreground mt-1 mb-4">
-                        Upload files for comprehensive deepfake detection using multiple specialized AI models
+                        Upload files for comprehensive deepfake detection with detailed forensic analysis
                       </p>
                       <Input
                         type="file"
@@ -271,8 +271,10 @@ const Detection = () => {
 
                 {result && (
                   <div className="mt-6">
-                    <EnhancedResults result={result} />
-                    <FeedbackButtons resultId={result.id} onFeedback={handleFeedback} />
+                    <DetailedResults result={result} />
+                    <div className="mt-4">
+                      <FeedbackButtons resultId={result.id} onFeedback={handleFeedback} />
+                    </div>
                   </div>
                 )}
               </CardContent>
