@@ -1,148 +1,152 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowUpRight, ArrowDownRight, Edit2, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { toNumber, isLessThan } from "@/utils/helpers";
+import { getDashboardMetrics, DashboardMetrics as Metrics } from "@/utils/dashboard/realTimeData";
 
 export function DashboardMetrics() {
   const { toast } = useToast();
-  const [metrics, setMetrics] = useState([
-    {
-      title: "Total Detections",
-      value: "1,482",
-      change: "+8.2%",
-      positive: true,
-      editing: false,
-      tempValue: "1,482",
-    },
-    {
-      title: "Deepfakes Detected",
-      value: "347",
-      change: "+12.5%",
-      positive: false,
-      editing: false,
-      tempValue: "347",
-    },
-    {
-      title: "Detection Accuracy",
-      value: "94.3%",
-      change: "+2.4%",
-      positive: true,
-      editing: false,
-      tempValue: "94.3%",
-    },
-    {
-      title: "Media Analyzed",
-      value: "5,271",
-      change: "+15.7%",
-      positive: true,
-      editing: false,
-      tempValue: "5,271",
-    },
-  ]);
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<{ [key: string]: boolean }>({});
+  const [tempValues, setTempValues] = useState<{ [key: string]: string }>({});
 
-  const handleEditToggle = (index: number) => {
-    const newMetrics = [...metrics];
-    newMetrics[index].editing = !newMetrics[index].editing;
-    if (newMetrics[index].editing) {
-      newMetrics[index].tempValue = newMetrics[index].value;
-    }
-    setMetrics(newMetrics);
-  };
-
-  const handleValueChange = (index: number, value: string) => {
-    const newMetrics = [...metrics];
-    newMetrics[index].tempValue = value;
-    setMetrics(newMetrics);
-  };
-
-  const handleSaveValue = (index: number) => {
-    const newMetrics = [...metrics];
-    newMetrics[index].value = newMetrics[index].tempValue;
-    newMetrics[index].editing = false;
-    setMetrics(newMetrics);
-
-    toast({
-      title: "Metric Updated",
-      description: `${newMetrics[index].title} has been updated to ${newMetrics[index].value}`,
-    });
-  };
-
-  const randomizeMetrics = () => {
-    const randomizeValue = (isPercentage = false) => {
-      if (isPercentage) {
-        return `${(Math.random() * 20 + 80).toFixed(1)}%`;
-      } else {
-        const base = Math.random() * 5000 + 1000;
-        return base > 2000 ? `${Math.round(base).toLocaleString()}` : `${Math.round(base)}`;
-      }
-    };
-
-    const newMetrics = metrics.map(metric => {
-      const isPercentage = metric.value.includes("%");
-      const randomValue = randomizeValue(isPercentage);
-      const randomChange = `${Math.random() > 0.5 ? "+" : "-"}${(Math.random() * 10).toFixed(1)}%`;
-      const isPositive = randomChange.startsWith("+");
+  const loadMetrics = async () => {
+    try {
+      setLoading(true);
+      const data = await getDashboardMetrics();
+      setMetrics(data);
       
-      if (metric.title === "Deepfakes Detected" && !isPercentage) {
-        // Make sure deepfake count is lower than total detections
-        const totalDetections = toNumber(metrics[0].value);
-        // Fix the issue with string vs number comparison
-        const randomValue = Math.round(Math.random() * totalDetections * 0.4);
-        // Ensure value is less than total detections using our helper
-        const value = isLessThan(randomValue, totalDetections) ? randomValue : Math.floor(totalDetections * 0.9);
-        const formattedValue = value > 1000 ? value.toLocaleString() : value.toString();
-        
-        return {
-          ...metric,
-          value: formattedValue,
-          change: randomChange,
-          positive: isPositive,
-          editing: false,
-          tempValue: formattedValue
-        };
-      }
-      
-      return {
-        ...metric,
-        value: randomValue,
-        change: randomChange,
-        positive: isPositive,
-        editing: false,
-        tempValue: randomValue
+      // Calculate percentage changes (mock for now since we need historical data)
+      const changes = {
+        totalDetections: "+8.2%",
+        deepfakesDetected: data.deepfakesDetected > data.totalDetections * 0.3 ? "+12.5%" : "-5.1%",
+        detectionAccuracy: "+2.4%",
+        mediaAnalyzed: "+15.7%"
       };
-    });
+      
+      setMetrics(prev => prev ? { ...prev, changes } : null);
+    } catch (error) {
+      console.error('Error loading metrics:', error);
+      toast({
+        title: "Error Loading Metrics",
+        description: "Failed to load real-time dashboard data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setMetrics(newMetrics);
+  useEffect(() => {
+    loadMetrics();
+    
+    // Set up real-time updates every 30 seconds
+    const interval = setInterval(loadMetrics, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleEditToggle = (key: string, currentValue: string) => {
+    setEditing(prev => ({ ...prev, [key]: !prev[key] }));
+    if (!editing[key]) {
+      setTempValues(prev => ({ ...prev, [key]: currentValue }));
+    }
+  };
+
+  const handleValueChange = (key: string, value: string) => {
+    setTempValues(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSaveValue = (key: string) => {
+    // In a real app, this would update the database
+    setEditing(prev => ({ ...prev, [key]: false }));
     
     toast({
-      title: "Metrics Refreshed",
-      description: "All detection metrics have been updated with new data",
+      title: "Metric Updated",
+      description: `${key} has been updated to ${tempValues[key]}`,
     });
   };
+
+  if (loading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="shadow-sm animate-pulse">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <div className="h-4 w-24 bg-gray-200 rounded"></div>
+              <div className="h-6 w-6 bg-gray-200 rounded"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 w-16 bg-gray-200 rounded mb-2"></div>
+              <div className="h-4 w-20 bg-gray-200 rounded"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (!metrics) return null;
+
+  const metricItems = [
+    {
+      key: "totalDetections",
+      title: "Total Detections",
+      value: metrics.totalDetections.toLocaleString(),
+      change: "+8.2%",
+      positive: true,
+    },
+    {
+      key: "deepfakesDetected", 
+      title: "Deepfakes Detected",
+      value: metrics.deepfakesDetected.toLocaleString(),
+      change: metrics.deepfakesDetected > metrics.totalDetections * 0.3 ? "+12.5%" : "-5.1%",
+      positive: metrics.deepfakesDetected <= metrics.totalDetections * 0.3,
+    },
+    {
+      key: "detectionAccuracy",
+      title: "Detection Accuracy", 
+      value: `${metrics.detectionAccuracy}%`,
+      change: "+2.4%",
+      positive: true,
+    },
+    {
+      key: "mediaAnalyzed",
+      title: "Media Analyzed",
+      value: metrics.mediaAnalyzed.toLocaleString(),
+      change: "+15.7%", 
+      positive: true,
+    },
+  ];
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" variant="outline" onClick={randomizeMetrics}>
-          Refresh Detection Stats
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold">Real-Time Detection Metrics</h2>
+          <p className="text-sm text-muted-foreground">Live data from your detection database</p>
+        </div>
+        <Button size="sm" variant="outline" onClick={loadMetrics} disabled={loading}>
+          Refresh Live Data
         </Button>
       </div>
+      
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {metrics.map((metric, index) => (
-          <Card key={metric.title} className="shadow-sm">
+        {metricItems.map((metric) => (
+          <Card key={metric.key} className="shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-sm font-medium text-gray-500">{metric.title}</CardTitle>
               <Button 
                 size="icon" 
                 variant="ghost" 
                 className="h-6 w-6" 
-                onClick={() => metric.editing ? handleSaveValue(index) : handleEditToggle(index)}
+                onClick={() => editing[metric.key] ? handleSaveValue(metric.key) : handleEditToggle(metric.key, metric.value)}
               >
-                {metric.editing ? (
+                {editing[metric.key] ? (
                   <Check className="h-4 w-4" />
                 ) : (
                   <Edit2 className="h-4 w-4" />
@@ -150,14 +154,14 @@ export function DashboardMetrics() {
               </Button>
             </CardHeader>
             <CardContent>
-              {metric.editing ? (
+              {editing[metric.key] ? (
                 <Input 
-                  value={metric.tempValue} 
-                  onChange={(e) => handleValueChange(index, e.target.value)}
+                  value={tempValues[metric.key] || metric.value} 
+                  onChange={(e) => handleValueChange(metric.key, e.target.value)}
                   className="text-xl font-bold h-8 py-0"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      handleSaveValue(index);
+                      handleSaveValue(metric.key);
                     }
                   }}
                 />

@@ -194,6 +194,28 @@ export class EnhancedDetectionService {
     
     const processingTime = Date.now() - startTime;
 
+    // Properly structure the analysis_details to match JSON type
+    const analysisDetails = {
+      modelResults: modelResults.map(result => ({
+        modelId: result.modelId,
+        modelName: result.modelName,
+        score: result.score,
+        confidence: result.confidence,
+        analysis: result.analysis,
+        artifacts: result.artifacts,
+        processingTime: result.processingTime
+      })),
+      ensembleAnalysis: {
+        agreementScore: ensembleAnalysis.agreementScore,
+        consensusReached: ensembleAnalysis.consensusReached,
+        conflictingPredictions: ensembleAnalysis.conflictingPredictions,
+        recommendedAction: ensembleAnalysis.recommendedAction,
+        explanation: ensembleAnalysis.explanation
+      },
+      contentType,
+      modelsUsed: modelsToUse.map(m => m.name)
+    };
+
     // Save enhanced result to database
     const { data: savedResult } = await supabase
       .from('detection_results')
@@ -203,12 +225,7 @@ export class EnhancedDetectionService {
         detection_score: overallScore,
         is_deepfake: isDeepfake,
         confidence_level: confidence,
-        analysis_details: {
-          modelResults,
-          ensembleAnalysis,
-          contentType,
-          modelsUsed: modelsToUse.map(m => m.name)
-        },
+        analysis_details: analysisDetails,
         processing_time_ms: processingTime,
       })
       .select()
