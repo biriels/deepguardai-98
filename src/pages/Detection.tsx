@@ -1,17 +1,20 @@
-
 import React, { useState } from "react";
 import Layout from "@/components/Layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { Shield, Upload, Link as LinkIcon, AlertTriangle, CheckCircle, Brain, Zap } from "lucide-react";
+import { Shield, Upload, Link as LinkIcon, Brain, Zap, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import DeepfakeModerator from "@/components/Detection/DeepfakeModerator";
 import FeedbackButtons from "@/components/Detection/FeedbackButtons";
+import { ModelSelector } from "@/components/Detection/ModelSelector";
+import { EnhancedResults } from "@/components/Detection/EnhancedResults";
+import { 
+  enhancedDetectionService, 
+  EnhancedDetectionResult 
+} from "@/utils/ai/enhancedDetection";
 
 interface DetectionResult {
   id: string;
@@ -35,7 +38,12 @@ const Detection = () => {
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [result, setResult] = useState<DetectionResult | null>(null);
+  const [result, setResult] = useState<EnhancedDetectionResult | null>(null);
+  const [selectedModels, setSelectedModels] = useState<string[]>([
+    'meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo'
+  ]);
+  const [contentType, setContentType] = useState('text');
+  const [showModelSelector, setShowModelSelector] = useState(false);
 
   const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,9 +52,9 @@ const Detection = () => {
     setAnalyzing(true);
     setProgress(0);
     setResult(null);
+    setContentType('text');
     
     try {
-      // Simulate progress updates
       const progressInterval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 90) {
@@ -57,30 +65,22 @@ const Detection = () => {
         });
       }, 500);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const response = await supabase.functions.invoke('analyze-url', {
-        body: { url },
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-      });
+      const enhancedResult = await enhancedDetectionService.analyzeContentWithMultipleModels(
+        url, 
+        selectedModels.length > 0 ? selectedModels : undefined
+      );
 
       clearInterval(progressInterval);
       setProgress(100);
 
-      if (response.error) {
-        throw new Error(response.error.message || 'Analysis failed');
-      }
-
-      setResult(response.data);
+      setResult(enhancedResult);
       toast({
-        title: "Analysis Complete",
-        description: `Content analyzed with ${response.data.result.confidence} confidence`
+        title: "Enhanced Analysis Complete",
+        description: `Content analyzed with ${enhancedResult.modelResults.length} AI models`
       });
 
     } catch (error) {
-      console.error('URL analysis error:', error);
+      console.error('Enhanced URL analysis error:', error);
       toast({
         title: "Analysis Failed",
         description: error instanceof Error ? error.message : "Failed to analyze URL",
@@ -99,8 +99,14 @@ const Detection = () => {
     setProgress(0);
     setResult(null);
     
+    // Determine content type
+    const fileContentType = file.type.startsWith('image/') ? 'image' : 
+      file.type.startsWith('video/') ? 'video' :
+      file.type.startsWith('audio/') ? 'audio' : 'text';
+    
+    setContentType(fileContentType);
+    
     try {
-      // Simulate progress updates
       const progressInterval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 85) {
@@ -111,40 +117,22 @@ const Detection = () => {
         });
       }, 600);
 
-      // Create a temporary URL for the file
-      const fileUrl = URL.createObjectURL(file);
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const response = await supabase.functions.invoke('deepfake-detection', {
-        body: { 
-          contentUrl: fileUrl,
-          fileName: file.name,
-          contentType: file.type
-        },
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-      });
+      const enhancedResult = await enhancedDetectionService.analyzeContentWithMultipleModels(
+        file, 
+        selectedModels.length > 0 ? selectedModels : undefined
+      );
 
       clearInterval(progressInterval);
       setProgress(100);
 
-      if (response.error) {
-        throw new Error(response.error.message || 'Detection failed');
-      }
-
-      setResult(response.data);
+      setResult(enhancedResult);
       toast({
-        title: "Detection Complete",
-        description: `File analyzed in ${response.data.processingTime}ms with ${response.data.result.confidence} confidence`
+        title: "Enhanced Detection Complete",
+        description: `File analyzed with ${enhancedResult.modelResults.length} AI models in ${enhancedResult.processingTime}ms`
       });
 
-      // Clean up the temporary URL
-      URL.revokeObjectURL(fileUrl);
-
     } catch (error) {
-      console.error('File detection error:', error);
+      console.error('Enhanced file detection error:', error);
       toast({
         title: "Detection Failed",
         description: error instanceof Error ? error.message : "Failed to analyze file",
@@ -159,7 +147,7 @@ const Detection = () => {
     console.log(`Feedback received: ${type} for result ID: ${result?.id}`);
     toast({
       title: "Feedback Recorded",
-      description: "Thank you for your feedback!"
+      description: "Thank you for helping improve our AI models!"
     });
   };
   
@@ -170,21 +158,39 @@ const Detection = () => {
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
               <Brain className="h-8 w-8 text-primary" />
-              AI-Powered Deepfake Detection
+              Enhanced AI Deepfake Detection
             </h1>
             <p className="text-muted-foreground mt-2">
-              Advanced AI models from Together AI analyze content for authenticity and manipulation
+              Multi-model ensemble analysis with Together AI, HuggingFace, and specialized detection models
             </p>
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Zap className="h-4 w-4" />
-            <span>Powered by Llama Models</span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowModelSelector(!showModelSelector)}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Configure Models
+            </Button>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Zap className="h-4 w-4" />
+              <span>Multi-AI Powered</span>
+            </div>
           </div>
         </div>
 
+        {showModelSelector && (
+          <ModelSelector
+            contentType={contentType}
+            selectedModels={selectedModels}
+            onModelsSelected={setSelectedModels}
+          />
+        )}
+
         <Tabs defaultValue="detection" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="detection">AI Detection</TabsTrigger>
+            <TabsTrigger value="detection">Enhanced AI Detection</TabsTrigger>
             <TabsTrigger value="moderation">Community Moderation</TabsTrigger>
           </TabsList>
           <TabsContent value="detection">
@@ -192,7 +198,12 @@ const Detection = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5" />
-                  Analyze Content with AI
+                  Multi-Model AI Analysis
+                  {selectedModels.length > 0 && (
+                    <span className="text-sm font-normal text-muted-foreground ml-2">
+                      ({selectedModels.length} models selected)
+                    </span>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -207,7 +218,7 @@ const Detection = () => {
                         <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           type="url"
-                          placeholder="Enter URL to analyze with AI models..."
+                          placeholder="Enter URL for enhanced multi-model analysis..."
                           className="pl-9"
                           value={url}
                           onChange={(e) => setUrl(e.target.value)}
@@ -215,16 +226,16 @@ const Detection = () => {
                         />
                       </div>
                       <Button type="submit" disabled={analyzing || !url}>
-                        {analyzing ? "Analyzing..." : "Analyze with AI"}
+                        {analyzing ? "Analyzing..." : "Enhanced Analysis"}
                       </Button>
                     </form>
                   </TabsContent>
                   <TabsContent value="upload" className="space-y-4">
                     <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                       <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-medium">Upload for AI Analysis</h3>
+                      <h3 className="text-lg font-medium">Enhanced Multi-Model Analysis</h3>
                       <p className="text-sm text-muted-foreground mt-1 mb-4">
-                        Upload images, videos, or audio files for deepfake detection using advanced AI models
+                        Upload files for comprehensive deepfake detection using multiple specialized AI models
                       </p>
                       <Input
                         type="file"
@@ -246,99 +257,21 @@ const Detection = () => {
                 {analyzing && (
                   <div className="mt-6 space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">AI Analysis in Progress...</span>
+                      <span className="text-sm font-medium">
+                        Running enhanced AI analysis with {selectedModels.length || 'multiple'} models...
+                      </span>
                       <span className="text-sm font-medium">{Math.round(progress)}%</span>
                     </div>
                     <Progress value={progress} className="h-2" />
                     <p className="text-xs text-muted-foreground">
-                      Running advanced neural networks for deepfake detection
+                      Processing with ensemble of specialized deepfake detection models
                     </p>
                   </div>
                 )}
 
                 {result && (
                   <div className="mt-6">
-                    <Alert className={
-                      !result.result.isDeepfake 
-                        ? "border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800/30" 
-                        : result.result.confidence === "medium"
-                        ? "border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800/30"
-                        : "border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800/30"
-                    }>
-                      {!result.result.isDeepfake ? (
-                        <CheckCircle className="h-4 w-4 text-emerald-500" />
-                      ) : (
-                        <AlertTriangle className="h-4 w-4 text-red-500" />
-                      )}
-                      <AlertTitle className={
-                        !result.result.isDeepfake 
-                          ? "text-emerald-800 dark:text-emerald-300"
-                          : result.result.confidence === "medium"
-                          ? "text-amber-800 dark:text-amber-300"
-                          : "text-red-800 dark:text-red-300"
-                      }>
-                        {!result.result.isDeepfake 
-                          ? "Content appears authentic" 
-                          : result.result.confidence === "medium"
-                          ? "Potential manipulation detected"
-                          : "Deepfake/AI content detected"}
-                      </AlertTitle>
-                      <AlertDescription className={
-                        !result.result.isDeepfake 
-                          ? "text-emerald-700 dark:text-emerald-400"
-                          : result.result.confidence === "medium"
-                          ? "text-amber-700 dark:text-amber-400"
-                          : "text-red-700 dark:text-red-400"
-                      }>
-                        AI Confidence: <span className="font-semibold">{result.result.score}%</span> • 
-                        Level: <span className="font-semibold capitalize">{result.result.confidence}</span> • 
-                        Model: {result.result.details.modelUsed.split('/')[1]}
-                      </AlertDescription>
-                    </Alert>
-
-                    <div className="mt-4 bg-card border border-border rounded-lg p-4">
-                      <h3 className="font-medium mb-3 flex items-center gap-2">
-                        <Brain className="h-4 w-4" />
-                        AI Analysis Details
-                      </h3>
-                      <div className="space-y-4">
-                        <div className="text-sm">
-                          <p className="font-medium mb-2">Detection Analysis:</p>
-                          <p className="text-muted-foreground leading-relaxed">
-                            {result.result.details.analysis}
-                          </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                          <div className="bg-background p-3 rounded-md">
-                            <p className="text-xs text-muted-foreground mb-1">Detection Type</p>
-                            <p className="font-medium capitalize">{result.result.details.detectionType.replace('_', ' ')}</p>
-                          </div>
-                          <div className="bg-background p-3 rounded-md">
-                            <p className="text-xs text-muted-foreground mb-1">Processing Time</p>
-                            <p className="font-medium">{result.processingTime}ms</p>
-                          </div>
-                          <div className="bg-background p-3 rounded-md">
-                            <p className="text-xs text-muted-foreground mb-1">Artifacts Found</p>
-                            <p className="font-medium">{result.result.details.artifacts.length}</p>
-                          </div>
-                        </div>
-
-                        {result.result.details.artifacts.length > 0 && (
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-2">Detected Artifacts:</p>
-                            <div className="flex flex-wrap gap-1">
-                              {result.result.details.artifacts.map((artifact, i) => (
-                                <span key={i} className="text-xs bg-muted px-2 py-1 rounded">
-                                  {artifact}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    
+                    <EnhancedResults result={result} />
                     <FeedbackButtons resultId={result.id} onFeedback={handleFeedback} />
                   </div>
                 )}
@@ -352,7 +285,7 @@ const Detection = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Detection History</CardTitle>
+            <CardTitle>Enhanced Detection History</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -361,19 +294,22 @@ const Detection = () => {
                   source: "Twitter post",
                   timestamp: "2 hours ago",
                   status: "fake",
-                  confidence: 94
+                  confidence: 94,
+                  models: 3
                 },
                 {
                   source: "Instagram image",
                   timestamp: "Yesterday",
                   status: "clean",
-                  confidence: 98
+                  confidence: 98,
+                  models: 4
                 },
                 {
                   source: "TikTok video",
                   timestamp: "2 days ago",
                   status: "warning",
-                  confidence: 75
+                  confidence: 75,
+                  models: 2
                 }
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 p-3 border-b last:border-0">
@@ -393,7 +329,7 @@ const Detection = () => {
                       {item.status === "clean" ? "Authentic" : 
                        item.status === "warning" ? "Suspicious" : "Deepfake"}
                     </p>
-                    <p className="text-xs">{item.confidence}% confidence</p>
+                    <p className="text-xs">{item.confidence}% • {item.models} models</p>
                   </div>
                 </div>
               ))}
