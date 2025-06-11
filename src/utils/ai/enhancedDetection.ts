@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 
 export interface EnhancedAnalysisResult {
@@ -8,6 +9,31 @@ export interface EnhancedAnalysisResult {
   analysisDetails: any;
   totalProcessingTime: number;
   contentType?: 'image' | 'video' | 'audio' | 'text';
+}
+
+export interface ModelResult {
+  modelName: string;
+  score: number;
+  analysis: string;
+  artifacts: string[];
+  processingTime: number;
+}
+
+export interface EnsembleAnalysis {
+  agreementScore: number;
+  consensusReached: boolean;
+  recommendedAction: 'accept' | 'review' | 'reject';
+  explanation: string;
+}
+
+export interface EnhancedDetectionResult {
+  id: string;
+  isDeepfake: boolean;
+  overallScore: number;
+  confidence: 'high' | 'medium' | 'low';
+  processingTime: number;
+  modelResults: ModelResult[];
+  ensembleAnalysis: EnsembleAnalysis;
 }
 
 export const storeDetectionResult = async (
@@ -115,3 +141,64 @@ export const deleteDetectionResult = async (id: string) => {
       throw error;
     }
   };
+
+// Enhanced Detection Service
+export const enhancedDetectionService = {
+  async analyzeContentWithMultipleModels(
+    content: File | string,
+    selectedModels?: string[]
+  ): Promise<EnhancedDetectionResult> {
+    const startTime = Date.now();
+    
+    // Mock implementation for demonstration
+    const mockModels = selectedModels || [
+      'meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo',
+      'HuggingFace-CLIP',
+      'Replicate-DeepFake-Detector'
+    ];
+
+    const modelResults: ModelResult[] = mockModels.map((modelName, index) => {
+      const score = Math.random() * 100;
+      const artifacts = score > 70 ? ['facial_inconsistency', 'temporal_artifacts'] : [];
+      
+      return {
+        modelName,
+        score,
+        analysis: score > 70 ? 'High probability of manipulation detected' : 'Content appears authentic',
+        artifacts,
+        processingTime: Math.random() * 2000 + 500
+      };
+    });
+
+    const averageScore = modelResults.reduce((sum, result) => sum + result.score, 0) / modelResults.length;
+    const agreementScore = this.calculateAgreementScore(modelResults);
+    const confidence = averageScore > 80 ? 'high' : averageScore > 50 ? 'medium' : 'low';
+    
+    const processingTime = Date.now() - startTime;
+
+    return {
+      id: `result_${Date.now()}`,
+      isDeepfake: averageScore > 60,
+      overallScore: averageScore,
+      confidence,
+      processingTime,
+      modelResults,
+      ensembleAnalysis: {
+        agreementScore,
+        consensusReached: agreementScore > 70,
+        recommendedAction: averageScore > 80 ? 'reject' : averageScore > 50 ? 'review' : 'accept',
+        explanation: `${modelResults.length} models analyzed the content with ${agreementScore}% agreement. ${
+          averageScore > 60 ? 'Multiple models detected signs of manipulation.' : 'Content appears to be authentic.'
+        }`
+      }
+    };
+  },
+
+  calculateAgreementScore(results: ModelResult[]): number {
+    if (results.length < 2) return 100;
+    
+    const classifications = results.map(r => r.score > 60);
+    const agreement = classifications.filter(c => c === classifications[0]).length;
+    return Math.round((agreement / results.length) * 100);
+  }
+};
