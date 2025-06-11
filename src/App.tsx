@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Agents from "./pages/Agents";
 import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
+import Pricing from "./pages/Pricing";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./contexts/AuthContext";
 import { UserProvider } from "./contexts/UserContext";
@@ -30,6 +31,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/pricing" element={<Pricing />} />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <Dashboard />
