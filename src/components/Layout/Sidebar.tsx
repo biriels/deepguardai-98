@@ -41,7 +41,7 @@ const Sidebar = () => {
     >
       <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
         {!collapsed && (
-          <h1 className="text-xl font-bold text-white">DeepGuard</h1>
+          <h1 className="text-xl font-bold text-sidebar-foreground">DeepGuard</h1>
         )}
         <Button
           variant="ghost"
@@ -68,7 +68,7 @@ const Sidebar = () => {
             <li key={item.name}>
               <Link
                 to={item.path}
-                className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors text-sidebar-foreground"
               >
                 <item.icon size={20} />
                 {!collapsed && <span>{item.name}</span>}

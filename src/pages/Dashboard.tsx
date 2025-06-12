@@ -93,7 +93,7 @@ const Dashboard = () => {
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Deepfake Detection Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Deepfake Detection Dashboard</h1>
           <p className="text-muted-foreground mt-2">
             Monitor detection trends and analyze media authenticity in real-time
           </p>
@@ -146,20 +146,20 @@ const Dashboard = () => {
                 <BarChart3 className="h-4 w-4" />
                 View Full Analytics
               </Button>
-              <div className="border-t pt-4 mt-4">
-                <h3 className="text-sm font-medium mb-2">Latest Scans</h3>
+              <div className="border-t border-border pt-4 mt-4">
+                <h3 className="text-sm font-medium mb-2 text-foreground">Latest Scans</h3>
                 <div className="space-y-3">
                   {recentScans.length > 0 ? (
                     recentScans.map((scan) => (
                       <div 
                         key={scan.id} 
                         className={`flex items-center gap-3 border-l-2 ${
-                          scan.isDeepfake ? 'border-red-500' : 'border-green-500'
+                          scan.isDeepfake ? 'border-destructive' : 'border-primary'
                         } pl-3 py-1`}
                       >
                         {getContentIcon(scan.contentType)}
                         <div>
-                          <p className="text-sm font-medium truncate max-w-[120px]">
+                          <p className="text-sm font-medium truncate max-w-[120px] text-foreground">
                             {scan.fileName}
                           </p>
                           <p className="text-xs text-muted-foreground">

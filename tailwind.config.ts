@@ -62,34 +62,7 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				paymon: {
-					50: '#f0f7ff',
-					100: '#e0efff',
-					200: '#c7e1ff',
-					300: '#a0cdff',
-					400: '#72aeff',
-					500: '#4b8eff',
-					600: '#2668f5',
-					700: '#1e55e4',
-					800: '#1d44b8',
-					900: '#1e3b92',
-					950: '#172554',
-				},
-				// Adding violet/purple colors for our theme
-				violet: {
-					50: '#f5f3ff',
-					100: '#ede9fe',
-					200: '#ddd6fe',
-					300: '#c4b5fd',
-					400: '#a78bfa',
-					500: '#8b5cf6',
-					600: '#7c3aed',
-					700: '#6d28d9',
-					800: '#5b21b6',
-					900: '#4c1d95',
-					950: '#2e1065',
-				},
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
