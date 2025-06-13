@@ -1,5 +1,6 @@
+
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
@@ -9,14 +10,16 @@ import Pricing from "@/pages/Pricing";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import PaymentCallback from "@/pages/PaymentCallback";
 import { Toaster } from "@/components/ui/toaster";
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <QueryClient>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <UserProvider>
           <NotificationProvider>
@@ -53,7 +56,7 @@ function App() {
           </NotificationProvider>
         </UserProvider>
       </AuthProvider>
-    </QueryClient>
+    </QueryClientProvider>
   );
 }
 
