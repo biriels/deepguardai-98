@@ -104,7 +104,7 @@ export function ProfileSettingsModal({ open, onOpenChange }: SettingsModalProps)
         <DialogFooter>
           <Button type="submit" onClick={handleSave}>Save changes</Button>
         </DialogFooter>
-      </Content>
+      </DialogContent>
     </Dialog>
   );
 }
