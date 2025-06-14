@@ -9,7 +9,7 @@ import Detection from "@/pages/Detection";
 import Pricing from "@/pages/Pricing";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { UserProvider } from "@/contexts/UserContext";
-import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import PaymentCallback from "@/pages/PaymentCallback";
@@ -23,8 +23,8 @@ function App() {
       <AuthProvider>
         <UserProvider>
           <NotificationProvider>
-            <BrowserRouter>
-              <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+            <ThemeProvider>
+              <BrowserRouter>
                 <div className="min-h-screen bg-background font-sans antialiased">
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
@@ -51,8 +51,8 @@ function App() {
                   </Routes>
                   <Toaster />
                 </div>
-              </ThemeProvider>
-            </BrowserRouter>
+              </BrowserRouter>
+            </ThemeProvider>
           </NotificationProvider>
         </UserProvider>
       </AuthProvider>
