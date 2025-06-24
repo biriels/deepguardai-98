@@ -23,8 +23,27 @@ import { useTheme } from "@/contexts/ThemeContext";
 const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
   const isMobile = useIsMobile();
-  const { userPlan, togglePlan, signOut } = useUser();
+  const { userPlan, togglePlan, signOut, email, user, profile } = useUser();
   
+  // Get display name from user profile or fallback to email username
+  const getDisplayName = () => {
+    if (profile?.full_name) return profile.full_name;
+    if (user?.user_metadata?.full_name) return user.user_metadata.full_name;
+    if (user?.user_metadata?.first_name && user?.user_metadata?.last_name) {
+      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
+    }
+    if (user?.user_metadata?.name) return user.user_metadata.name;
+    // Extract username from email as fallback
+    if (email) return email.split('@')[0];
+    return "User";
+  };
+
+  // Get initials for avatar
+  const getInitials = () => {
+    const name = getDisplayName();
+    return name.split(' ').map(word => word.charAt(0).toUpperCase()).slice(0, 2).join('');
+  };
+
   // Modal states
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [billingModalOpen, setBillingModalOpen] = useState(false);
@@ -50,6 +69,9 @@ const Navbar = () => {
   const handleSignOut = () => {
     signOut();
   };
+
+  const displayName = getDisplayName();
+  const initials = getInitials();
 
   return (
     <>
@@ -83,12 +105,12 @@ const Navbar = () => {
                 >
                   <span className="sr-only">User profile</span>
                   <div className="bg-violet-200 text-violet-800 font-semibold flex items-center justify-center w-8 h-8 rounded-full">
-                    SU
+                    {initials}
                   </div>
                   {!isMobile && (
                     <>
                       <div className="flex flex-col items-start text-left">
-                        <span className="text-sm font-medium leading-none">Sam User</span>
+                        <span className="text-sm font-medium leading-none">{displayName}</span>
                         <div className="flex items-center gap-1">
                           <Badge 
                             variant={userPlan === "premium" ? "default" : "outline"} 
@@ -105,8 +127,8 @@ const Navbar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56" sideOffset={8}>
                 <DropdownMenuLabel className="flex flex-col">
-                  <span>Sam User</span>
-                  <span className="text-xs font-normal text-muted-foreground">sam@example.com</span>
+                  <span>{displayName}</span>
+                  <span className="text-xs font-normal text-muted-foreground">{email}</span>
                   <Badge 
                     variant={userPlan === "premium" ? "default" : "outline"} 
                     className={`text-xs mt-2 ${userPlan === "premium" ? "bg-violet-500" : ""}`}

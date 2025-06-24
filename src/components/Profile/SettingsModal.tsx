@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -25,10 +25,34 @@ interface SettingsModalProps {
 
 export function ProfileSettingsModal({ open, onOpenChange }: SettingsModalProps) {
   const { toast } = useToast();
-  const { email } = useUser();
+  const { email, user, profile } = useUser();
   const { darkMode, toggleDarkMode } = useTheme();
-  const [name, setName] = useState("Sam User");
+  
+  // Initialize name from user data
+  const [name, setName] = useState("");
   const [bio, setBio] = useState("");
+
+  useEffect(() => {
+    // Set initial values when modal opens or user data changes
+    if (profile?.full_name) {
+      setName(profile.full_name);
+    } else if (user?.user_metadata?.full_name) {
+      setName(user.user_metadata.full_name);
+    } else if (user?.user_metadata?.first_name && user?.user_metadata?.last_name) {
+      setName(`${user.user_metadata.first_name} ${user.user_metadata.last_name}`);
+    } else if (user?.user_metadata?.name) {
+      setName(user.user_metadata.name);
+    } else if (email) {
+      setName(email.split('@')[0]);
+    } else {
+      setName("User");
+    }
+
+    // Set bio if available
+    if (profile?.bio) {
+      setBio(profile.bio);
+    }
+  }, [user, profile, email, open]);
   
   const handleSave = () => {
     toast({
