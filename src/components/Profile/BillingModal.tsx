@@ -30,13 +30,13 @@ export function BillingModal({ open, onOpenChange }: BillingModalProps) {
     }
     toast({
       title: "Plan Updated",
-      description: "You have successfully upgraded to the Premium plan."
+      description: "You have successfully upgraded to the Professional plan."
     });
     onOpenChange(false);
   };
   
   const handleDowngrade = () => {
-    if (userPlan === 'premium') {
+    if (userPlan === 'professional') {
       togglePlan();
     }
     toast({
@@ -61,8 +61,8 @@ export function BillingModal({ open, onOpenChange }: BillingModalProps) {
               <h3 className="text-lg font-medium">Current Plan</h3>
               <p className="text-sm text-muted-foreground">Your current subscription</p>
             </div>
-            <Badge className={userPlan === 'premium' ? 'bg-violet-500' : ''}>
-              {userPlan === 'premium' ? 'Premium' : 'Standard'}
+            <Badge className={userPlan === 'professional' ? 'bg-violet-500' : ''}>
+              {userPlan === 'professional' ? 'Professional' : userPlan === 'starter' ? 'Starter' : 'Standard'}
             </Badge>
           </div>
           
@@ -81,7 +81,7 @@ export function BillingModal({ open, onOpenChange }: BillingModalProps) {
                 </ul>
               </CardContent>
               <CardFooter>
-                {userPlan === 'premium' ? (
+                {userPlan === 'professional' ? (
                   <Button onClick={handleDowngrade} variant="outline" className="w-full">Downgrade</Button>
                 ) : (
                   <Button disabled className="w-full">Current Plan</Button>
@@ -89,13 +89,13 @@ export function BillingModal({ open, onOpenChange }: BillingModalProps) {
               </CardFooter>
             </Card>
             
-            <Card className={userPlan === 'premium' ? 'border-2 border-violet-500' : ''}>
+            <Card className={userPlan === 'professional' ? 'border-2 border-violet-500' : ''}>
               <CardHeader>
-                <CardTitle>Premium Plan</CardTitle>
+                <CardTitle>Professional Plan</CardTitle>
                 <CardDescription>Advanced features for professionals</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$29.99<span className="text-sm font-normal text-muted-foreground">/month</span></div>
+                <div className="text-2xl font-bold">$99.99<span className="text-sm font-normal text-muted-foreground">/month</span></div>
                 <ul className="mt-4 space-y-2 text-sm">
                   <li className="flex items-center">✓ Advanced monitoring</li>
                   <li className="flex items-center">✓ Unlimited projects</li>

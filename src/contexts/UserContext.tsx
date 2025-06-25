@@ -23,7 +23,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
   const { user, profile, userRole, signOut: authSignOut } = useAuthContext();
   
-  // Determine user plan based on role and user plans table
+  // Determine user plan based on role
   const getUserPlan = (): UserPlan => {
     if (userRole?.role === 'premium') return 'professional';
     if (userRole?.role === 'starter') return 'starter';
@@ -38,45 +38,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log('Refreshing user plan for user:', user.id);
       
-      // Check user_plans table for active subscription
-      const { data: userPlanData, error: planError } = await supabase
-        .from('user_plans')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .single();
-
-      if (planError && planError.code !== 'PGRST116') {
-        console.error('Error fetching user plan:', planError);
-        return;
-      }
-
-      let newRole = 'standard';
-      if (userPlanData) {
-        if (userPlanData.plan_type === 'professional') {
-          newRole = 'premium';
-        } else if (userPlanData.plan_type === 'starter') {
-          newRole = 'starter';
-        }
-      }
-
-      // Update user role based on active subscription
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .upsert({
-          user_id: user.id,
-          role: newRole
-        }, {
-          onConflict: 'user_id'
-        });
-
-      if (roleError) {
-        console.error('Error updating user role:', roleError);
-      } else {
-        console.log('User plan refreshed successfully:', newRole);
-        // Force a page reload to reflect the new plan
-        window.location.reload();
-      }
+      // For now, we'll work with the existing user_roles table
+      // In the future, when user_plans table is created, we can switch to that
+      
+      // Just reload the page to refresh the user role
+      window.location.reload();
     } catch (error) {
       console.error('Error refreshing user plan:', error);
     }

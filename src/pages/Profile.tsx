@@ -20,8 +20,8 @@ const Profile = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Profile</h1>
-          <Badge variant={userPlan === 'premium' ? 'default' : 'secondary'}>
-            {userPlan === 'premium' ? 'Premium' : 'Standard'} Plan
+          <Badge variant={userPlan === 'professional' ? 'default' : 'secondary'}>
+            {userPlan === 'professional' ? 'Professional' : userPlan === 'starter' ? 'Starter' : 'Standard'} Plan
           </Badge>
         </div>
 
@@ -90,9 +90,9 @@ const Profile = () => {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Current Plan: {userPlan === 'premium' ? 'Premium' : 'Standard'}</p>
+                  <p className="font-medium">Current Plan: {userPlan === 'professional' ? 'Professional' : userPlan === 'starter' ? 'Starter' : 'Standard'}</p>
                   <p className="text-sm text-muted-foreground">
-                    {userPlan === 'premium' ? '$29.99/month' : '$9.99/month'}
+                    {userPlan === 'professional' ? '$99.99/month' : userPlan === 'starter' ? '$29.99/month' : '$9.99/month'}
                   </p>
                 </div>
                 <Button 

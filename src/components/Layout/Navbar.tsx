@@ -113,10 +113,10 @@ const Navbar = () => {
                         <span className="text-sm font-medium leading-none">{displayName}</span>
                         <div className="flex items-center gap-1">
                           <Badge 
-                            variant={userPlan === "premium" ? "default" : "outline"} 
-                            className={`text-xs mt-1 ${userPlan === "premium" ? "bg-violet-500" : ""}`}
+                            variant={userPlan === "professional" ? "default" : "outline"} 
+                            className={`text-xs mt-1 ${userPlan === "professional" ? "bg-violet-500" : ""}`}
                           >
-                            {userPlan === "premium" ? "Premium" : "Standard"}
+                            {userPlan === "professional" ? "Professional" : userPlan === "starter" ? "Starter" : "Standard"}
                           </Badge>
                         </div>
                       </div>
@@ -130,10 +130,10 @@ const Navbar = () => {
                   <span>{displayName}</span>
                   <span className="text-xs font-normal text-muted-foreground">{email}</span>
                   <Badge 
-                    variant={userPlan === "premium" ? "default" : "outline"} 
-                    className={`text-xs mt-2 ${userPlan === "premium" ? "bg-violet-500" : ""}`}
+                    variant={userPlan === "professional" ? "default" : "outline"} 
+                    className={`text-xs mt-2 ${userPlan === "professional" ? "bg-violet-500" : ""}`}
                   >
-                    {userPlan === "premium" ? "Premium Plan" : "Standard Plan"}
+                    {userPlan === "professional" ? "Professional Plan" : userPlan === "starter" ? "Starter Plan" : "Standard Plan"}
                   </Badge>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
