@@ -125,21 +125,6 @@ export const useNotifications = () => {
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { toast } = useToast();
-  const [hasShownInitialToast, setHasShownInitialToast] = useState(false);
-
-  useEffect(() => {
-    // Only show toast once per session and only if there are unread notifications
-    if (!hasShownInitialToast && state.unreadCount > 0) {
-      setHasShownInitialToast(true);
-      // Only show if there are actually unread notifications worth mentioning
-      if (state.unreadCount >= 2) {
-        toast({
-          title: `You have ${state.unreadCount} unread notification${state.unreadCount !== 1 ? 's' : ''}`,
-          description: "Check your notifications to stay updated.",
-        });
-      }
-    }
-  }, [toast, state.unreadCount, hasShownInitialToast]);
 
   const addNotification = (notification: Omit<Notification, "id" | "read" | "time">) => {
     const newNotification: Notification = {
