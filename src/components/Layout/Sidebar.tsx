@@ -11,7 +11,7 @@ import {
   Bell, 
   Settings,
   Bot,
-  Extension
+  Puzzle
 } from 'lucide-react';
 
 const sidebarItems = [
@@ -53,7 +53,7 @@ const sidebarItems = [
   {
     title: 'Extension Tools',
     href: '/extension',
-    icon: Extension,
+    icon: Puzzle,
   },
   {
     title: 'Settings',

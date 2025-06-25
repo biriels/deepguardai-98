@@ -34,9 +34,12 @@ const ExtensionPopup = ({ isCompact = false, onClose }: ExtensionPopupProps) => 
       const enhancedResult = await enhancedDetectionService.analyzeContentWithMultipleModels(targetUrl);
       setResult(enhancedResult);
       
+      // Get the confidence score from the result structure
+      const confidence = enhancedResult.finalScore || enhancedResult.averageScore || 0;
+      
       toast({
         title: "Analysis Complete",
-        description: `Content analyzed with confidence: ${enhancedResult.overallConfidence}%`
+        description: `Content analyzed with confidence: ${confidence}%`
       });
     } catch (error) {
       toast({
@@ -52,6 +55,10 @@ const ExtensionPopup = ({ isCompact = false, onClose }: ExtensionPopupProps) => 
   const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await analyzeUrl(url);
+  };
+
+  const getConfidence = (result: any) => {
+    return result?.finalScore || result?.averageScore || 0;
   };
 
   const getStatusColor = (confidence: number) => {
@@ -118,27 +125,27 @@ const ExtensionPopup = ({ isCompact = false, onClose }: ExtensionPopupProps) => 
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">Detection Result:</span>
               <Badge 
-                variant={result.overallConfidence >= 70 ? "destructive" : 
-                        result.overallConfidence >= 40 ? "secondary" : "default"}
+                variant={getConfidence(result) >= 70 ? "destructive" : 
+                        getConfidence(result) >= 40 ? "secondary" : "default"}
                 className="text-xs"
               >
-                {result.overallConfidence >= 70 ? "Likely Fake" : 
-                 result.overallConfidence >= 40 ? "Suspicious" : "Likely Authentic"}
+                {getConfidence(result) >= 70 ? "Likely Fake" : 
+                 getConfidence(result) >= 40 ? "Suspicious" : "Likely Authentic"}
               </Badge>
             </div>
             
-            <div className={`flex items-center gap-2 ${getStatusColor(result.overallConfidence)}`}>
-              {getStatusIcon(result.overallConfidence)}
+            <div className={`flex items-center gap-2 ${getStatusColor(getConfidence(result))}`}>
+              {getStatusIcon(getConfidence(result))}
               <span className="text-xs">
-                Confidence: {result.overallConfidence}%
+                Confidence: {getConfidence(result)}%
               </span>
             </div>
             
             <div className="text-xs text-muted-foreground">
-              Analyzed by {result.modelResults.length} AI models
+              Analyzed by {result.modelResults?.length || 1} AI models
             </div>
             
-            {result.overallConfidence >= 40 && (
+            {getConfidence(result) >= 40 && (
               <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
                 ⚠️ This content may contain manipulated or synthetic elements
               </div>

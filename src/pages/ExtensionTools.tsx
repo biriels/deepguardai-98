@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Extension, Bookmark, Globe, Code2, Download, ExternalLink } from 'lucide-react';
+import { Puzzle, Bookmark, Globe, Code2, Download, ExternalLink } from 'lucide-react';
 import ExtensionPopup from '@/components/Extension/ExtensionPopup';
 import BookmarkletGenerator from '@/components/Extension/BookmarkletGenerator';
 
@@ -18,7 +18,7 @@ const ExtensionTools = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <Extension className="h-8 w-8 text-primary" />
+              <Puzzle className="h-8 w-8 text-primary" />
               Browser Extension Tools
             </h1>
             <p className="text-muted-foreground mt-2">
@@ -43,7 +43,7 @@ const ExtensionTools = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Extension className="h-5 w-5" />
+                  <Puzzle className="h-5 w-5" />
                   Extension Popup Demo
                 </CardTitle>
               </CardHeader>
@@ -141,7 +141,7 @@ const ExtensionTools = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center py-8">
-                  <Extension className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <Puzzle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="font-medium mb-2">Chrome Extension Coming Soon</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     We're preparing a full Chrome extension package that will integrate with these APIs.
