@@ -35,7 +35,7 @@ const ExtensionPopup = ({ isCompact = false, onClose }: ExtensionPopupProps) => 
       setResult(enhancedResult);
       
       // Get the confidence score from the result structure
-      const confidence = enhancedResult.finalScore || enhancedResult.averageScore || 0;
+      const confidence = enhancedResult.overallScore || 0;
       
       toast({
         title: "Analysis Complete",
@@ -58,7 +58,7 @@ const ExtensionPopup = ({ isCompact = false, onClose }: ExtensionPopupProps) => 
   };
 
   const getConfidence = (result: any) => {
-    return result?.finalScore || result?.averageScore || 0;
+    return result?.overallScore || 0;
   };
 
   const getStatusColor = (confidence: number) => {
