@@ -1,83 +1,101 @@
 
-import React from "react";
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import { 
+  LayoutDashboard, 
   Shield, 
-  AlertCircle, 
+  Monitor, 
   BarChart3, 
-  Settings, 
-  Home, 
-  MonitorPlay, 
-  FileText,
-  Users,
-  FileCode,
-  Brain
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+  FileText, 
+  Bell, 
+  Settings,
+  Bot,
+  Extension
+} from 'lucide-react';
+
+const sidebarItems = [
+  {
+    title: 'Dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    title: 'Detection',
+    href: '/detection',
+    icon: Shield,
+  },
+  {
+    title: 'Monitoring',
+    href: '/monitoring',
+    icon: Monitor,
+  },
+  {
+    title: 'Analytics',
+    href: '/analytics',
+    icon: BarChart3,
+  },
+  {
+    title: 'Reports',
+    href: '/reports',
+    icon: FileText,
+  },
+  {
+    title: 'Alerts',
+    href: '/alerts',
+    icon: Bell,
+  },
+  {
+    title: 'AI Agents',
+    href: '/agents',
+    icon: Bot,
+  },
+  {
+    title: 'Extension Tools',
+    href: '/extension',
+    icon: Extension,
+  },
+  {
+    title: 'Settings',
+    href: '/settings',
+    icon: Settings,
+  },
+];
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = React.useState(false);
-
-  const navItems = [
-    { name: "Dashboard", icon: Home, path: "/dashboard" },
-    { name: "Detection", icon: Shield, path: "/detection" },
-    { name: "Monitoring", icon: MonitorPlay, path: "/monitoring" },
-    { name: "Reports", icon: FileText, path: "/reports" },
-    { name: "Analytics", icon: BarChart3, path: "/analytics" },
-    { name: "Alerts", icon: AlertCircle, path: "/alerts" },
-    { name: "Agents", icon: Brain, path: "/agents" },
-    { name: "Team", icon: Users, path: "/team" },
-    { name: "API Docs", icon: FileCode, path: "/api-docs" },
-    { name: "Settings", icon: Settings, path: "/settings" },
-  ];
+  const location = useLocation();
 
   return (
-    <aside
-      className={cn(
-        "bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-all duration-300 ease-in-out",
-        collapsed ? "w-16" : "w-56"
-      )}
-    >
-      <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
-        {!collapsed && (
-          <h1 className="text-xl font-bold text-sidebar-foreground">DeepGuard</h1>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? (
-            <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 2L13 7.5L8 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M13 7.5H1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          ) : (
-            <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 2L2 7.5L7 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M2 7.5H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          )}
-        </Button>
+    <div className="flex h-full w-64 flex-col bg-background border-r">
+      <div className="flex h-14 items-center border-b px-4">
+        <Link to="/dashboard" className="flex items-center space-x-2">
+          <Shield className="h-6 w-6 text-primary" />
+          <span className="text-lg font-semibold">DeepGuard</span>
+        </Link>
       </div>
-      <nav className="p-2">
-        <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.name}>
-              <Link
-                to={item.path}
-                className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors text-sidebar-foreground"
-              >
-                <item.icon size={20} />
-                {!collapsed && <span>{item.name}</span>}
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <nav className="flex-1 space-y-1 p-2">
+        {sidebarItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.href;
+          
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                'flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              <span>{item.title}</span>
+            </Link>
+          );
+        })}
       </nav>
-    </aside>
+    </div>
   );
 };
 
