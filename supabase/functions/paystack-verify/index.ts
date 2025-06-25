@@ -20,6 +20,8 @@ serve(async (req) => {
       throw new Error('Payment reference is required')
     }
 
+    console.log('Verifying payment with reference:', reference)
+
     const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY')
     if (!paystackSecretKey) {
       throw new Error('Paystack secret key not configured')
@@ -41,6 +43,7 @@ serve(async (req) => {
     }
 
     const paymentData = result.data
+    console.log('Payment verification successful:', paymentData)
     
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
@@ -59,12 +62,18 @@ serve(async (req) => {
       .single()
 
     if (paymentData.status === 'success' && transaction) {
+      console.log('Payment successful, updating user plan')
+      
       // Determine credits based on plan
       let creditsLimit = 10 // free plan default
+      let userRole = 'standard'
+      
       if (transaction.plan_type === 'starter') {
         creditsLimit = 1000
+        userRole = 'starter'
       } else if (transaction.plan_type === 'professional') {
         creditsLimit = 10000
+        userRole = 'premium'
       }
 
       // Update or create user plan
@@ -87,6 +96,24 @@ serve(async (req) => {
 
       if (planError) {
         console.error('Error updating user plan:', planError)
+      } else {
+        console.log('User plan updated successfully')
+      }
+
+      // Update user role to reflect the new plan
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .upsert({
+          user_id: transaction.user_id,
+          role: userRole
+        }, {
+          onConflict: 'user_id'
+        })
+
+      if (roleError) {
+        console.error('Error updating user role:', roleError)
+      } else {
+        console.log('User role updated to:', userRole)
       }
     }
 
@@ -98,6 +125,7 @@ serve(async (req) => {
       },
     )
   } catch (error) {
+    console.error('Payment verification error:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 

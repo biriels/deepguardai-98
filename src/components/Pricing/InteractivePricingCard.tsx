@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Check, Star, Loader2 } from "lucide-react";
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useUser } from '@/contexts/UserContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -28,7 +29,17 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
   const [loading, setLoading] = useState(false);
   const [paymentType, setPaymentType] = useState<'one_time' | 'subscription'>('subscription');
   const { user } = useAuthContext();
+  const { userPlan } = useUser();
   const { toast } = useToast();
+
+  // Check if this is the user's current plan
+  const isCurrentPlan = () => {
+    const planName = plan.name.toLowerCase();
+    if (planName === 'free' && userPlan === 'standard') return true;
+    if (planName === 'starter' && userPlan === 'starter') return true;
+    if (planName === 'professional' && userPlan === 'professional') return true;
+    return false;
+  };
 
   const handlePayment = async () => {
     if (!user) {
@@ -48,9 +59,18 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
       return;
     }
 
+    if (isCurrentPlan()) {
+      toast({
+        title: "Current Plan",
+        description: `You're already on the ${plan.name} plan!`,
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      console.log('Initializing payment for plan:', plan.name);
       const { data, error } = await supabase.functions.invoke('paystack-initialize', {
         body: {
           email: user.email,
@@ -63,9 +83,21 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Payment initialization error:', error);
+        throw error;
+      }
+
+      console.log('Payment initialization response:', data);
 
       if (data?.data?.authorization_url) {
+        // Store the selected plan in localStorage for reference
+        localStorage.setItem('selectedPlan', JSON.stringify({
+          name: plan.name,
+          price: plan.priceValue,
+          paymentType
+        }));
+        
         // Redirect to Paystack payment page
         window.location.href = data.data.authorization_url;
       } else {
@@ -83,12 +115,29 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
     }
   };
 
+  const getButtonText = () => {
+    if (isCurrentPlan()) return "Current Plan";
+    if (plan.priceValue === 0) return "Current Plan";
+    return plan.buttonText;
+  };
+
+  const getButtonVariant = () => {
+    if (isCurrentPlan()) return "outline" as const;
+    return plan.buttonVariant;
+  };
+
   return (
-    <Card className={`relative h-full ${plan.popular ? 'border-primary shadow-lg scale-105' : ''}`}>
-      {plan.popular && (
+    <Card className={`relative h-full ${plan.popular ? 'border-primary shadow-lg scale-105' : ''} ${isCurrentPlan() ? 'border-green-500 bg-green-50' : ''}`}>
+      {plan.popular && !isCurrentPlan() && (
         <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary">
           <Star className="w-3 h-3 mr-1" />
           Most Popular
+        </Badge>
+      )}
+      
+      {isCurrentPlan() && (
+        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500">
+          Your Plan
         </Badge>
       )}
       
@@ -118,7 +167,7 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
       </CardContent>
 
       <CardFooter className="pt-4 flex flex-col space-y-3">
-        {plan.priceValue > 0 && (
+        {plan.priceValue > 0 && !isCurrentPlan() && (
           <div className="flex gap-2 w-full">
             <Button
               variant={paymentType === 'subscription' ? 'default' : 'outline'}
@@ -140,10 +189,10 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
         )}
         
         <Button 
-          variant={plan.buttonVariant} 
+          variant={getButtonVariant()} 
           className="w-full"
           onClick={handlePayment}
-          disabled={loading}
+          disabled={loading || isCurrentPlan()}
         >
           {loading ? (
             <>
@@ -151,7 +200,7 @@ export const InteractivePricingCard: React.FC<InteractivePricingCardProps> = ({ 
               Processing...
             </>
           ) : (
-            plan.buttonText
+            getButtonText()
           )}
         </Button>
       </CardFooter>
