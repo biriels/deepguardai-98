@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +26,7 @@ import NotFound from "./pages/NotFound";
 import Agents from "./pages/Agents";
 import ExtensionTools from "./pages/ExtensionTools";
 import PaymentCallback from "./pages/PaymentCallback";
+import BreachDetection from "./pages/BreachDetection";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +56,11 @@ function App() {
                     <Route path="/detection" element={
                       <ProtectedRoute>
                         <Detection />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/breach-detection" element={
+                      <ProtectedRoute>
+                        <BreachDetection />
                       </ProtectedRoute>
                     } />
                     <Route path="/monitoring" element={

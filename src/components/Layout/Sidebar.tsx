@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -11,7 +10,8 @@ import {
   Bell, 
   Settings,
   Bot,
-  Puzzle
+  Puzzle,
+  AlertTriangle
 } from 'lucide-react';
 
 const sidebarItems = [
@@ -24,6 +24,11 @@ const sidebarItems = [
     title: 'Detection',
     href: '/detection',
     icon: Shield,
+  },
+  {
+    title: 'Breach Detection',
+    href: '/breach-detection',
+    icon: AlertTriangle,
   },
   {
     title: 'Monitoring',
