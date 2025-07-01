@@ -73,26 +73,27 @@ const PhoneBreachDetectionCard = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Phone className="h-5 w-5 text-primary" />
+    <Card className="w-full">
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           Phone Number Breach Detection
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Input
             type="tel"
-            placeholder="Enter phone number to check... (+1234567890)"
+            placeholder="Enter phone number... (+1234567890)"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             disabled={isChecking}
+            className="flex-1"
           />
           <Button 
             onClick={handleCheck}
             disabled={isChecking || !phoneNumber}
-            className="min-w-24"
+            className="w-full sm:w-auto sm:min-w-24"
           >
             {isChecking ? 'Checking...' : 'Check'}
           </Button>
@@ -101,13 +102,13 @@ const PhoneBreachDetectionCard = () => {
         {result && (
           <div className="space-y-4">
             <Alert className={result.isBreached ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}>
-              <div className="flex items-center gap-2">
+              <div className="flex items-start gap-2">
                 {result.isBreached ? (
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
                 ) : (
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                 )}
-                <AlertDescription className={result.isBreached ? 'text-red-800' : 'text-green-800'}>
+                <AlertDescription className={`${result.isBreached ? 'text-red-800' : 'text-green-800'} text-sm`}>
                   {result.isBreached 
                     ? `⚠️ ALERT: Your phone number was found in ${result.totalBreaches} data breach(es)`
                     : '✅ Good news! No breaches found for this phone number'
@@ -118,35 +119,35 @@ const PhoneBreachDetectionCard = () => {
 
             {result.isBreached && (
               <>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">Risk Level:</span>
                     <Badge className={getRiskColor(result.riskLevel)}>
                       {result.riskLevel.toUpperCase()}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     Checked {new Date(result.detectionDate).toLocaleString()}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-medium">Phone Breaches Found:</h4>
+                  <h4 className="font-medium text-sm sm:text-base">Phone Breaches Found:</h4>
                   {result.breaches.map((breach) => (
                     <div key={breach.id} className="border rounded-lg p-3 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="font-medium">{breach.breachName}</div>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div className="font-medium text-sm sm:text-base break-words">{breach.breachName}</div>
                         <div className="flex items-center gap-2">
                           <Badge className={getSeverityColor(breach.severity)}>
                             {breach.severity.toUpperCase()}
                           </Badge>
-                          <Badge variant="outline">
+                          <Badge variant="outline" className="text-xs">
                             {new Date(breach.breachDate).getFullYear()}
                           </Badge>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {breach.description}
                       </p>
                       <div className="flex flex-wrap gap-1">
@@ -168,12 +169,12 @@ const PhoneBreachDetectionCard = () => {
                   ))}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button className="flex-1">
                     <Shield className="h-4 w-4 mr-2" />
                     Secure My Phone Number
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     Download Report
                   </Button>
                 </div>
