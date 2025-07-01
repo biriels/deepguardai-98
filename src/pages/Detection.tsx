@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Layout from "@/components/Layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Shield, Upload, Link as LinkIcon, Brain, Zap, Settings } from "lucide-react";
+import { Shield, Upload, Link as LinkIcon, Brain, Zap, Settings, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import DeepfakeModerator from "@/components/Detection/DeepfakeModerator";
 import FeedbackButtons from "@/components/Detection/FeedbackButtons";
 import { ModelSelector } from "@/components/Detection/ModelSelector";
 import { DetailedResults } from "@/components/Detection/DetailedResults";
+import BreachDetectionCard from "@/components/Breach/BreachDetectionCard";
+import PhoneBreachDetectionCard from "@/components/Breach/PhoneBreachDetectionCard";
 import { 
   enhancedDetectionService, 
   EnhancedDetectionResult 
@@ -158,10 +161,10 @@ const Detection = () => {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2">
               <Brain className="h-6 h-6 sm:h-8 sm:w-8 text-primary" />
-              Enhanced AI Deepfake Detection
+              AI Detection & Security Center
             </h1>
             <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-              Multi-model ensemble analysis with detailed forensic insights
+              Comprehensive deepfake detection and data breach monitoring platform
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -188,12 +191,14 @@ const Detection = () => {
           />
         )}
 
-        <Tabs defaultValue="detection" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="detection">Enhanced AI Detection</TabsTrigger>
+        <Tabs defaultValue="deepfake" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="deepfake">Deepfake Detection</TabsTrigger>
+            <TabsTrigger value="breach">Breach Detection</TabsTrigger>
             <TabsTrigger value="moderation">Community Moderation</TabsTrigger>
           </TabsList>
-          <TabsContent value="detection">
+          
+          <TabsContent value="deepfake">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -280,6 +285,54 @@ const Detection = () => {
               </CardContent>
             </Card>
           </TabsContent>
+          
+          <TabsContent value="breach">
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-semibold flex items-center justify-center gap-2 mb-2">
+                  <AlertTriangle className="h-5 w-5 text-primary" />
+                  Data Breach Detection
+                </h2>
+                <p className="text-muted-foreground">
+                  Check if your email addresses and phone numbers have been compromised in data breaches
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <BreachDetectionCard />
+                <PhoneBreachDetectionCard />
+              </div>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Security Tips</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="space-y-2">
+                      <h4 className="font-medium">If your email is breached:</h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• Change your password immediately</li>
+                        <li>• Enable two-factor authentication</li>
+                        <li>• Monitor for suspicious activity</li>
+                        <li>• Update passwords on other accounts</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="font-medium">If your phone is breached:</h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• Contact your service provider</li>
+                        <li>• Enable account security features</li>
+                        <li>• Review recent account activity</li>
+                        <li>• Consider changing your number</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          
           <TabsContent value="moderation">
             <DeepfakeModerator />
           </TabsContent>

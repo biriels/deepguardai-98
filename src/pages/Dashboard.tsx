@@ -6,7 +6,8 @@ import { RevenueChart } from "@/components/Dashboard/RevenueChart";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, Shield, AlertTriangle, BarChart3, Image, Video, FileAudio, FileText } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { RefreshCcw, Shield, AlertTriangle, BarChart3, Image, Video, FileAudio, FileText, Mail, Phone, Eye, ArrowRight } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 import { getDashboardMetrics, RecentDetection } from "@/utils/dashboard/realTimeData";
@@ -63,6 +64,14 @@ const Dashboard = () => {
     });
   };
 
+  const handleNavigateToBreachDetection = () => {
+    navigate('/breach-detection');
+    toast({ 
+      title: "Breach Detection Opened", 
+      description: "Check for compromised accounts and data breaches" 
+    });
+  };
+
   const handleNavigateToAlerts = () => {
     navigate('/alerts');
     toast({ 
@@ -93,9 +102,9 @@ const Dashboard = () => {
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Deepfake Detection Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Security Dashboard</h1>
           <p className="text-muted-foreground mt-2">
-            Monitor detection trends and analyze media authenticity in real-time
+            Monitor deepfake detection, data breaches, and security threats in real-time
           </p>
         </div>
         <Button 
@@ -132,9 +141,18 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm" 
                 className="w-full justify-start gap-2"
-                onClick={handleNavigateToAlerts}
+                onClick={handleNavigateToBreachDetection}
               >
                 <AlertTriangle className="h-4 w-4" />
+                Check Data Breaches
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full justify-start gap-2"
+                onClick={handleNavigateToAlerts}
+              >
+                <Eye className="h-4 w-4" />
                 View Recent Alerts
               </Button>
               <Button 
@@ -176,6 +194,118 @@ const Dashboard = () => {
                       </p>
                     </div>
                   )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* New Breach Detection Section */}
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+          <Card className="lg:col-span-2">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-lg font-semibold">Data Breach Monitoring</CardTitle>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleNavigateToBreachDetection}
+              >
+                View All <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600">5</div>
+                  <div className="text-xs text-muted-foreground">Active Breaches</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">12</div>
+                  <div className="text-xs text-muted-foreground">Monitored Emails</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">6</div>
+                  <div className="text-xs text-muted-foreground">Monitored Phones</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">13</div>
+                  <div className="text-xs text-muted-foreground">Secured Accounts</div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Recent Breach Alerts</h4>
+                <div className="space-y-2">
+                  {[
+                    { type: 'email', identifier: 'user@*****.com', breach: 'LastPass', severity: 'critical' },
+                    { type: 'phone', identifier: '+1***-***-1234', breach: 'TelecomBreach2023', severity: 'high' },
+                    { type: 'email', identifier: 'test@*****.com', breach: 'Twitter', severity: 'medium' }
+                  ].map((alert, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        {alert.type === 'email' ? (
+                          <Mail className="h-3 w-3 text-blue-600" />
+                        ) : (
+                          <Phone className="h-3 w-3 text-purple-600" />
+                        )}
+                        <div>
+                          <div className="text-sm font-medium">{alert.identifier}</div>
+                          <div className="text-xs text-muted-foreground">{alert.breach}</div>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant={alert.severity === 'critical' ? 'destructive' : 'secondary'}
+                        className="text-xs"
+                      >
+                        {alert.severity}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Security Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                className="w-full justify-start text-sm" 
+                variant="outline" 
+                size="sm"
+                onClick={handleNavigateToBreachDetection}
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Check Email Breaches
+              </Button>
+              <Button 
+                className="w-full justify-start text-sm" 
+                variant="outline" 
+                size="sm"
+                onClick={handleNavigateToBreachDetection}
+              >
+                <Phone className="h-4 w-4 mr-2" />
+                Check Phone Breaches
+              </Button>
+              <Button 
+                className="w-full justify-start text-sm" 
+                variant="outline" 
+                size="sm"
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Security Report
+              </Button>
+              <div className="pt-2 border-t">
+                <div className="text-xs text-muted-foreground mb-2">Quick Scan</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="ghost" size="sm" className="h-8 text-xs">
+                    Email
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 text-xs">
+                    Phone
+                  </Button>
                 </div>
               </div>
             </CardContent>
