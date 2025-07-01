@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Layout from "@/components/Layout/Layout";
 import BreachDetectionCard from '@/components/Breach/BreachDetectionCard';
+import PhoneBreachDetectionCard from '@/components/Breach/PhoneBreachDetectionCard';
 import BreachRecoveryWizard from '@/components/Breach/BreachRecoveryWizard';
 import BreachAlertDialog from '@/components/Breach/BreachAlertDialog';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,9 @@ import {
   Clock,
   FileText,
   Search,
-  Bell
+  Bell,
+  Phone,
+  Mail
 } from 'lucide-react';
 import { BreachDetectionResult } from '@/types/breach';
 
@@ -45,7 +48,7 @@ const BreachDetection = () => {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Data Breach Detection</h1>
             <p className="text-muted-foreground mt-2">
-              Monitor and respond to data breaches affecting your email addresses
+              Monitor and respond to data breaches affecting your email addresses and phone numbers
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -69,7 +72,7 @@ const BreachDetection = () => {
                   <AlertTriangle className="h-4 w-4 text-red-600" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">3</div>
+                  <div className="text-2xl font-bold">5</div>
                   <div className="text-xs text-muted-foreground">Active Breaches</div>
                 </div>
               </div>
@@ -79,7 +82,7 @@ const BreachDetection = () => {
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-blue-100 p-2">
-                  <Users className="h-4 w-4 text-blue-600" />
+                  <Mail className="h-4 w-4 text-blue-600" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">12</div>
@@ -91,12 +94,12 @@ const BreachDetection = () => {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-full bg-green-100 p-2">
-                  <Shield className="h-4 w-4 text-green-600" />
+                <div className="rounded-full bg-purple-100 p-2">
+                  <Phone className="h-4 w-4 text-purple-600" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">8</div>
-                  <div className="text-xs text-muted-foreground">Secured Accounts</div>
+                  <div className="text-2xl font-bold">6</div>
+                  <div className="text-xs text-muted-foreground">Monitored Phones</div>
                 </div>
               </div>
             </CardContent>
@@ -104,12 +107,12 @@ const BreachDetection = () => {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-full bg-orange-100 p-2">
-                  <Clock className="h-4 w-4 text-orange-600" />
+                <div className="rounded-full bg-green-100 p-2">
+                  <Shield className="h-4 w-4 text-green-600" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">24h</div>
-                  <div className="text-xs text-muted-foreground">Last Scan</div>
+                  <div className="text-2xl font-bold">13</div>
+                  <div className="text-xs text-muted-foreground">Secured Accounts</div>
                 </div>
               </div>
             </CardContent>
@@ -119,7 +122,7 @@ const BreachDetection = () => {
         <Tabs defaultValue="detection" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="detection">Breach Detection</TabsTrigger>
-            <TabsTrigger value="monitoring">Email Monitoring</TabsTrigger>
+            <TabsTrigger value="monitoring">Monitoring Dashboard</TabsTrigger>
             <TabsTrigger value="recovery">Recovery Center</TabsTrigger>
           </TabsList>
           
@@ -127,7 +130,10 @@ const BreachDetection = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-6">
                 <BreachDetectionCard />
-                
+                <PhoneBreachDetectionCard />
+              </div>
+
+              <div className="space-y-6">
                 {/* Recent Breaches */}
                 <Card>
                   <CardHeader>
@@ -135,15 +141,25 @@ const BreachDetection = () => {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {[
-                      { name: 'LastPass', date: '2022-12-22', affected: '30M', severity: 'critical' },
-                      { name: 'Twitter', date: '2022-08-05', affected: '5.4M', severity: 'high' },
-                      { name: 'Medibank', date: '2022-10-13', affected: '9.7M', severity: 'high' }
+                      { name: 'TelecomBreach2023', date: '2023-08-15', affected: '2.1M', severity: 'high', type: 'phone' },
+                      { name: 'LastPass', date: '2022-12-22', affected: '30M', severity: 'critical', type: 'email' },
+                      { name: 'SocialMediaLeak', date: '2023-11-22', affected: '5.4M', severity: 'critical', type: 'phone' },
+                      { name: 'Twitter', date: '2022-08-05', affected: '5.4M', severity: 'high', type: 'email' }
                     ].map((breach) => (
                       <div key={breach.name} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <div className="font-medium">{breach.name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {new Date(breach.date).toLocaleDateString()} • {breach.affected} affected
+                        <div className="flex items-center gap-3">
+                          <div className="rounded-full bg-gray-100 p-1">
+                            {breach.type === 'phone' ? (
+                              <Phone className="h-3 w-3 text-purple-600" />
+                            ) : (
+                              <Mail className="h-3 w-3 text-blue-600" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium">{breach.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {new Date(breach.date).toLocaleDateString()} • {breach.affected} affected
+                            </div>
                           </div>
                         </div>
                         <Badge variant={breach.severity === 'critical' ? 'destructive' : 'secondary'}>
@@ -153,9 +169,7 @@ const BreachDetection = () => {
                     ))}
                   </CardContent>
                 </Card>
-              </div>
 
-              <div className="space-y-6">
                 {/* Security Timeline */}
                 <Card>
                   <CardHeader>
@@ -164,9 +178,11 @@ const BreachDetection = () => {
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       {[
-                        { time: '2 hours ago', event: 'Breach scan completed', type: 'success' },
+                        { time: '2 hours ago', event: 'Phone breach scan completed', type: 'success' },
+                        { time: '5 hours ago', event: 'Email breach scan completed', type: 'success' },
                         { time: '1 day ago', event: 'Password changed for user@email.com', type: 'success' },
-                        { time: '3 days ago', event: 'New breach detected: Adobe 2023', type: 'warning' },
+                        { time: '2 days ago', event: 'Phone number secured: +1***-***-1234', type: 'success' },
+                        { time: '3 days ago', event: 'New breach detected: TelecomBreach2023', type: 'warning' },
                         { time: '1 week ago', event: '2FA enabled for secure@email.com', type: 'success' }
                       ].map((item, index) => (
                         <div key={index} className="flex items-start gap-3">
@@ -204,6 +220,10 @@ const BreachDetection = () => {
                       Secure Me Mode
                     </Button>
                     <Button className="w-full justify-start" variant="outline">
+                      <Phone className="h-4 w-4 mr-2" />
+                      Phone Safety Score
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
                       <TrendingUp className="h-4 w-4 mr-2" />
                       Email Safety Score
                     </Button>
@@ -221,8 +241,8 @@ const BreachDetection = () => {
             <Card>
               <CardContent className="p-6">
                 <div className="text-center py-8">
-                  <h3 className="text-lg font-medium mb-2">Email Monitoring Dashboard</h3>
-                  <p className="text-muted-foreground">Monitor multiple email addresses for data breaches</p>
+                  <h3 className="text-lg font-medium mb-2">Monitoring Dashboard</h3>
+                  <p className="text-muted-foreground">Monitor multiple email addresses and phone numbers for data breaches</p>
                 </div>
               </CardContent>
             </Card>
@@ -239,7 +259,7 @@ const BreachDetection = () => {
                 <CardContent className="p-6">
                   <div className="text-center py-8">
                     <h3 className="text-lg font-medium mb-2">Recovery Center</h3>
-                    <p className="text-muted-foreground">Access recovery tools and guides</p>
+                    <p className="text-muted-foreground">Access recovery tools and guides for compromised accounts</p>
                   </div>
                 </CardContent>
               </Card>

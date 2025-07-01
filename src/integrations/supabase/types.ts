@@ -277,6 +277,84 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_breach_detections: {
+        Row: {
+          breach_details: Json | null
+          created_at: string
+          detection_date: string
+          id: string
+          is_breached: boolean
+          phone_number: string
+          risk_level: string | null
+          total_breaches: number | null
+          user_id: string | null
+        }
+        Insert: {
+          breach_details?: Json | null
+          created_at?: string
+          detection_date?: string
+          id?: string
+          is_breached?: boolean
+          phone_number: string
+          risk_level?: string | null
+          total_breaches?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          breach_details?: Json | null
+          created_at?: string
+          detection_date?: string
+          id?: string
+          is_breached?: boolean
+          phone_number?: string
+          risk_level?: string | null
+          total_breaches?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      phone_breaches: {
+        Row: {
+          breach_date: string
+          breach_name: string
+          created_at: string
+          data_exposed: string[] | null
+          description: string | null
+          id: string
+          is_verified: boolean | null
+          phone_number: string
+          severity: string | null
+          source: string | null
+          updated_at: string
+        }
+        Insert: {
+          breach_date: string
+          breach_name: string
+          created_at?: string
+          data_exposed?: string[] | null
+          description?: string | null
+          id?: string
+          is_verified?: boolean | null
+          phone_number: string
+          severity?: string | null
+          source?: string | null
+          updated_at?: string
+        }
+        Update: {
+          breach_date?: string
+          breach_name?: string
+          created_at?: string
+          data_exposed?: string[] | null
+          description?: string | null
+          id?: string
+          is_verified?: boolean | null
+          phone_number?: string
+          severity?: string | null
+          source?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       price_history: {
         Row: {
           close_price: number

@@ -19,6 +19,20 @@ export interface BreachData {
   isSubscriptionFree: boolean;
 }
 
+export interface PhoneBreachData {
+  id: string;
+  phoneNumber: string;
+  breachName: string;
+  breachDate: string;
+  description: string;
+  dataExposed: string[];
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  source: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface BreachDetectionResult {
   email: string;
   isBreached: boolean;
@@ -27,6 +41,16 @@ export interface BreachDetectionResult {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   totalBreaches: number;
   mostRecentBreach?: BreachData;
+}
+
+export interface PhoneBreachDetectionResult {
+  phoneNumber: string;
+  isBreached: boolean;
+  breaches: PhoneBreachData[];
+  detectionDate: string;
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  totalBreaches: number;
+  mostRecentBreach?: PhoneBreachData;
 }
 
 export interface RecoveryStep {
@@ -50,6 +74,18 @@ export interface BreachAlert {
   userId: string;
   email: string;
   breachData: BreachDetectionResult;
+  alertSent: boolean;
+  alertMethods: ('email' | 'push' | 'sms')[];
+  createdAt: string;
+  acknowledgedAt?: string;
+  recoverySteps: RecoveryStep[];
+}
+
+export interface PhoneBreachAlert {
+  id: string;
+  userId: string;
+  phoneNumber: string;
+  breachData: PhoneBreachDetectionResult;
   alertSent: boolean;
   alertMethods: ('email' | 'push' | 'sms')[];
   createdAt: string;
