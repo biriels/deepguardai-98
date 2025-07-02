@@ -62,7 +62,7 @@ export class BreachAnalyticsService {
       };
 
       [...emailBreaches, ...phoneBreaches].forEach(detection => {
-        const risk = detection.confidence_level || detection.risk_level || 'low';
+        const risk = ('confidence_level' in detection ? detection.confidence_level : detection.risk_level) || 'low';
         if (risk in riskDistribution) {
           riskDistribution[risk as keyof typeof riskDistribution]++;
         }

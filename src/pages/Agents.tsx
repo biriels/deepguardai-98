@@ -41,26 +41,42 @@ const Agents = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
-        <Heading 
-          title="AI Agents" 
-          description="Configure and manage your autonomous deepfake detection agents" 
-        />
+      <div className="space-y-8 max-w-7xl mx-auto">
+        <div className="text-center space-y-4">
+          <div className="text-center">
+            <Heading 
+              title="AI Agents" 
+              description="Configure and manage your autonomous deepfake detection agents" 
+            />
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            <div className="flex items-center gap-2 bg-muted px-3 py-1 rounded-full text-sm">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>{Object.values(activeAgents).filter(Boolean).length} Active</span>
+            </div>
+            <div className="flex items-center gap-2 bg-muted px-3 py-1 rounded-full text-sm">
+              <div className="w-2 h-2 bg-muted-foreground rounded-full"></div>
+              <span>{Object.values(activeAgents).filter(a => !a).length} Inactive</span>
+            </div>
+          </div>
+        </div>
         
-        <Tabs defaultValue="dashboard" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="dashboard">Agent Dashboard</TabsTrigger>
-            <TabsTrigger value="builder">Agent Builder</TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <div className="flex justify-center">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsTrigger value="dashboard" className="text-sm">Agent Dashboard</TabsTrigger>
+              <TabsTrigger value="builder" className="text-sm">Agent Builder</TabsTrigger>
+            </TabsList>
+          </div>
           
-          <TabsContent value="dashboard" className="space-y-4">
+          <TabsContent value="dashboard" className="space-y-6">
             <AgentDashboard 
               activeAgents={activeAgents} 
               toggleAgent={toggleAgent}
             />
           </TabsContent>
           
-          <TabsContent value="builder">
+          <TabsContent value="builder" className="space-y-6">
             <AgentBuilder onAgentCreated={handleAgentCreated} />
           </TabsContent>
         </Tabs>
