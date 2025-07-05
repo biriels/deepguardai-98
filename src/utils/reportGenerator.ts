@@ -1,0 +1,155 @@
+import { BreachDetectionResult, PhoneBreachDetectionResult } from '@/types/breach';
+
+export interface SecurityReport {
+  email?: string;
+  phoneNumber?: string;
+  scanDate: string;
+  riskLevel: string;
+  totalBreaches: number;
+  breaches: any[];
+  recommendations: string[];
+}
+
+export class ReportGenerator {
+  static generateEmailReport(result: BreachDetectionResult): SecurityReport {
+    const recommendations = this.getEmailRecommendations(result);
+    
+    return {
+      email: result.email,
+      scanDate: result.detectionDate,
+      riskLevel: result.riskLevel,
+      totalBreaches: result.totalBreaches,
+      breaches: result.breaches,
+      recommendations
+    };
+  }
+
+  static generatePhoneReport(result: PhoneBreachDetectionResult): SecurityReport {
+    const recommendations = this.getPhoneRecommendations(result);
+    
+    return {
+      phoneNumber: result.phoneNumber,
+      scanDate: result.detectionDate,
+      riskLevel: result.riskLevel,
+      totalBreaches: result.totalBreaches,
+      breaches: result.breaches,
+      recommendations
+    };
+  }
+
+  private static getEmailRecommendations(result: BreachDetectionResult): string[] {
+    const recommendations = [
+      'Monitor your email regularly for suspicious activity',
+      'Enable two-factor authentication on all accounts',
+      'Use unique, strong passwords for each account'
+    ];
+
+    if (result.isBreached) {
+      recommendations.unshift(
+        'Change passwords for all affected accounts immediately',
+        'Check and update security questions and recovery options',
+        'Consider using a password manager'
+      );
+
+      if (result.riskLevel === 'critical' || result.riskLevel === 'high') {
+        recommendations.push(
+          'Contact customer support for affected services',
+          'Consider credit monitoring services',
+          'Review financial statements for unauthorized activity'
+        );
+      }
+    }
+
+    return recommendations;
+  }
+
+  private static getPhoneRecommendations(result: PhoneBreachDetectionResult): string[] {
+    const recommendations = [
+      'Be cautious of unexpected calls or messages',
+      'Never share personal information over unsolicited calls',
+      'Enable call blocking features on your device'
+    ];
+
+    if (result.isBreached) {
+      recommendations.unshift(
+        'Contact your mobile carrier about the breach',
+        'Enable additional security features with your carrier',
+        'Consider changing your phone number if severely compromised'
+      );
+
+      if (result.riskLevel === 'critical' || result.riskLevel === 'high') {
+        recommendations.push(
+          'Monitor financial accounts for unauthorized access',
+          'Set up fraud alerts with credit bureaus',
+          'Review and update privacy settings on social media'
+        );
+      }
+    }
+
+    return recommendations;
+  }
+
+  static downloadReport(report: SecurityReport, filename: string): void {
+    const reportContent = this.formatReportContent(report);
+    const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  private static formatReportContent(report: SecurityReport): string {
+    const lines = [
+      '='.repeat(60),
+      'SECURITY BREACH DETECTION REPORT',
+      '='.repeat(60),
+      '',
+      `Generated: ${new Date(report.scanDate).toLocaleString()}`,
+      `Contact: ${report.email || report.phoneNumber}`,
+      `Risk Level: ${report.riskLevel.toUpperCase()}`,
+      `Total Breaches Found: ${report.totalBreaches}`,
+      '',
+      'BREACH SUMMARY',
+      '-'.repeat(30)
+    ];
+
+    if (report.totalBreaches === 0) {
+      lines.push('✅ No breaches detected for this contact information.');
+    } else {
+      lines.push(`⚠️  ${report.totalBreaches} breach(es) detected affecting your information.`);
+      lines.push('');
+      
+      report.breaches.forEach((breach, index) => {
+        lines.push(`${index + 1}. ${breach.name || breach.breachName}`);
+        lines.push(`   Date: ${breach.breachDate}`);
+        lines.push(`   Description: ${breach.description}`);
+        if (breach.dataClasses) {
+          lines.push(`   Data Exposed: ${breach.dataClasses.join(', ')}`);
+        } else if (breach.dataExposed) {
+          lines.push(`   Data Exposed: ${breach.dataExposed.join(', ')}`);
+        }
+        lines.push('');
+      });
+    }
+
+    lines.push('SECURITY RECOMMENDATIONS');
+    lines.push('-'.repeat(30));
+    
+    report.recommendations.forEach((rec, index) => {
+      lines.push(`${index + 1}. ${rec}`);
+    });
+
+    lines.push('');
+    lines.push('='.repeat(60));
+    lines.push('Report generated by DeepGuard Security Scanner');
+    lines.push('For questions or support, contact our security team');
+    lines.push('='.repeat(60));
+
+    return lines.join('\n');
+  }
+}

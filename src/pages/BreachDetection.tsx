@@ -22,8 +22,10 @@ import {
   Mail
 } from 'lucide-react';
 import { BreachDetectionResult } from '@/types/breach';
+import { useToast } from "@/hooks/use-toast";
 
 const BreachDetection = () => {
+  const { toast } = useToast();
   const [showRecoveryWizard, setShowRecoveryWizard] = useState(false);
   const [showBreachAlert, setShowBreachAlert] = useState(false);
   const [currentBreach, setCurrentBreach] = useState<BreachDetectionResult | null>(null);
@@ -236,7 +238,17 @@ const BreachDetection = () => {
                       <TrendingUp className="h-4 w-4 mr-2 flex-shrink-0" />
                       <span className="truncate">Email Safety Score</span>
                     </Button>
-                    <Button className="w-full justify-start text-sm" variant="outline" size="sm">
+                    <Button 
+                      className="w-full justify-start text-sm" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        toast({
+                          title: "Feature Available Above",
+                          description: "Use the download buttons in the detection cards above to generate specific reports",
+                        });
+                      }}
+                    >
                       <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
                       <span className="truncate">Download Security Report</span>
                     </Button>

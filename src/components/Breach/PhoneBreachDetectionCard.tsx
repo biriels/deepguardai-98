@@ -9,12 +9,14 @@ import { Phone, AlertTriangle, CheckCircle, Shield, Clock } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { BreachDetectionApi } from '@/utils/api/breachDetectionApi';
 import { PhoneBreachDetectionResult } from '@/types/breach';
+import { ReportGenerator } from '@/utils/reportGenerator';
 
 const PhoneBreachDetectionCard = () => {
   const { toast } = useToast();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<PhoneBreachDetectionResult | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleCheck = async () => {
     if (!phoneNumber) {
@@ -51,6 +53,31 @@ const PhoneBreachDetectionCard = () => {
       });
     } finally {
       setIsChecking(false);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    if (!result) return;
+
+    setIsDownloading(true);
+    try {
+      const report = ReportGenerator.generatePhoneReport(result);
+      const filename = `phone-security-report-${result.phoneNumber.replace(/[^0-9]/g, '')}-${new Date().toISOString().split('T')[0]}.txt`;
+      
+      ReportGenerator.downloadReport(report, filename);
+      
+      toast({
+        title: "Report Downloaded",
+        description: "Your phone security report has been downloaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Unable to download report. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -174,8 +201,13 @@ const PhoneBreachDetectionCard = () => {
                     <Shield className="h-4 w-4 mr-2" />
                     Secure My Phone Number
                   </Button>
-                  <Button variant="outline" className="w-full sm:w-auto">
-                    Download Report
+                  <Button 
+                    variant="outline" 
+                    className="w-full sm:w-auto"
+                    onClick={handleDownloadReport}
+                    disabled={isDownloading}
+                  >
+                    {isDownloading ? 'Generating...' : 'Download Report'}
                   </Button>
                 </div>
               </>

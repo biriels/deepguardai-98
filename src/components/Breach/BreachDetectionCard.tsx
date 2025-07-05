@@ -10,6 +10,7 @@ import { Shield, AlertTriangle, CheckCircle, Mail, Clock, Brain, Zap } from 'luc
 import { useToast } from "@/hooks/use-toast";
 import { BreachDetectionApi } from '@/utils/api/breachDetectionApi';
 import { BreachDetectionResult } from '@/types/breach';
+import { ReportGenerator } from '@/utils/reportGenerator';
 
 const BreachDetectionCard = () => {
   const { toast } = useToast();
@@ -17,6 +18,7 @@ const BreachDetectionCard = () => {
   const [isChecking, setIsChecking] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<BreachDetectionResult | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleCheck = async () => {
     if (!email) {
@@ -71,6 +73,31 @@ const BreachDetectionCard = () => {
       });
     } finally {
       setIsChecking(false);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    if (!result) return;
+
+    setIsDownloading(true);
+    try {
+      const report = ReportGenerator.generateEmailReport(result);
+      const filename = `security-report-${result.email.replace('@', '-at-')}-${new Date().toISOString().split('T')[0]}.txt`;
+      
+      ReportGenerator.downloadReport(report, filename);
+      
+      toast({
+        title: "Report Downloaded",
+        description: "Your security report has been downloaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Unable to download report. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -202,8 +229,13 @@ const BreachDetectionCard = () => {
                     <Mail className="h-4 w-4 mr-2" />
                     Start AI Recovery
                   </Button>
-                  <Button variant="outline" className="w-full sm:w-auto">
-                    Download Report
+                  <Button 
+                    variant="outline" 
+                    className="w-full sm:w-auto"
+                    onClick={handleDownloadReport}
+                    disabled={isDownloading}
+                  >
+                    {isDownloading ? 'Generating...' : 'Download Report'}
                   </Button>
                 </div>
               </>
