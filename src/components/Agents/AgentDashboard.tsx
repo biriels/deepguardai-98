@@ -31,40 +31,93 @@ const AgentDashboard: React.FC<AgentDashboardProps> = ({
 }) => {
   return (
     <div className="space-y-8">
-      {/* Agent Status Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-              {Object.values(activeAgents).filter(Boolean).length}
+      {/* Performance Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Card className="group bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-100 dark:from-blue-950/50 dark:via-blue-950/30 dark:to-indigo-950/50 border-blue-200/50 dark:border-blue-800/50 hover-scale">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300 group-hover:scale-105 transition-transform">
+                  {Object.values(activeAgents).filter(Boolean).length}
+                </div>
+                <div className="text-sm text-blue-600 dark:text-blue-400 font-medium">Active Agents</div>
+              </div>
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              </div>
             </div>
-            <div className="text-sm text-blue-600 dark:text-blue-400">Active Agents</div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-700 dark:text-green-300">24/7</div>
-            <div className="text-sm text-green-600 dark:text-green-400">Monitoring</div>
+        <Card className="group bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 dark:from-green-950/50 dark:via-emerald-950/30 dark:to-green-950/50 border-green-200/50 dark:border-green-800/50 hover-scale">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-green-700 dark:text-green-300 group-hover:scale-105 transition-transform">24/7</div>
+                <div className="text-sm text-green-600 dark:text-green-400 font-medium">Monitoring</div>
+              </div>
+              <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
+            </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">99.9%</div>
-            <div className="text-sm text-purple-600 dark:text-purple-400">Uptime</div>
+        <Card className="group bg-gradient-to-br from-purple-50 via-violet-50 to-purple-100 dark:from-purple-950/50 dark:via-violet-950/30 dark:to-purple-950/50 border-purple-200/50 dark:border-purple-800/50 hover-scale">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-300 group-hover:scale-105 transition-transform">99.9%</div>
+                <div className="text-sm text-purple-600 dark:text-purple-400 font-medium">Uptime</div>
+              </div>
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="group bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 dark:from-orange-950/50 dark:via-amber-950/30 dark:to-orange-950/50 border-orange-200/50 dark:border-orange-800/50 hover-scale">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-orange-700 dark:text-orange-300 group-hover:scale-105 transition-transform">1.2K</div>
+                <div className="text-sm text-orange-600 dark:text-orange-400 font-medium">Scans Today</div>
+              </div>
+              <div className="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg">
+                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Agent Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        <div className="space-y-6 lg:space-y-0 lg:contents">
-          <MonitoringAgent isActive={activeAgents.monitoring} onToggle={() => toggleAgent("monitoring")} />
-          <DecisionAgent isActive={activeAgents.decision} onToggle={() => toggleAgent("decision")} />
-          <NotificationAgent isActive={activeAgents.notification} onToggle={() => toggleAgent("notification")} />
-          <LearningAgent isActive={activeAgents.learning} onToggle={() => toggleAgent("learning")} />
-          <ReportingAgent isActive={activeAgents.reporting} onToggle={() => toggleAgent("reporting")} />
+      {/* Agent Cards Section */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold">Agent Control Center</h2>
+            <p className="text-muted-foreground text-sm sm:text-base">Manage and configure your AI detection agents</p>
+          </div>
+        </div>
+
+        {/* Agent Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+          <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <MonitoringAgent isActive={activeAgents.monitoring} onToggle={() => toggleAgent("monitoring")} />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <DecisionAgent isActive={activeAgents.decision} onToggle={() => toggleAgent("decision")} />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <NotificationAgent isActive={activeAgents.notification} onToggle={() => toggleAgent("notification")} />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <LearningAgent isActive={activeAgents.learning} onToggle={() => toggleAgent("learning")} />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <ReportingAgent isActive={activeAgents.reporting} onToggle={() => toggleAgent("reporting")} />
+          </div>
         </div>
       </div>
     </div>
