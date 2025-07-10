@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, Brain, BarChart3, CheckCircle, ArrowRight, Zap, Globe, Users, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import PricingSection from "@/components/Landing/PricingSection";
+import LandingBreachDemo from "@/components/Landing/LandingBreachDemo";
 
 const LandingPage = () => {
   const features = [
@@ -106,36 +107,9 @@ const LandingPage = () => {
               </Link>
             </div>
 
-            {/* Demo placeholder */}
-            <div className="relative max-w-4xl mx-auto">
-              <div className="bg-card rounded-lg border shadow-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">Live Detection Demo</h3>
-                  <Badge variant="secondary">Real-time</Badge>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-muted rounded-lg p-4 text-center">
-                    <div className="w-full h-32 bg-muted-foreground/20 rounded mb-2 flex items-center justify-center">
-                      <span className="text-muted-foreground">Upload Media</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Drop your file here</p>
-                  </div>
-                  <div className="bg-muted rounded-lg p-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm">Authenticity Score</span>
-                        <span className="text-sm font-medium text-green-600">94.7% Authentic</span>
-                      </div>
-                      <div className="w-full bg-muted-foreground/20 rounded-full h-2">
-                        <div className="bg-green-600 h-2 rounded-full" style={{ width: "94.7%" }}></div>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-2">
-                        Analysis complete in 0.8s
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Interactive Breach Detection Demo */}
+            <div className="relative">
+              <LandingBreachDemo />
             </div>
           </div>
         </div>
