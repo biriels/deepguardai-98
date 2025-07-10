@@ -271,7 +271,17 @@ export class BreachDetectionService {
     if (willHaveBreach) {
       const availableBreaches = this.breachDatabase.phoneCommonBreaches.map(breach => ({
         ...breach,
-        phoneNumber
+        phoneNumber,
+        // Enhanced mock data
+        associatedName: this.generateMockName(),
+        associatedEmail: this.generateMockEmail(phoneNumber),
+        carrier: this.getRandomCarrier(),
+        location: this.getRandomLocation(),
+        registrationDate: this.getRandomPastDate(5),
+        lastActiveDate: this.getRandomRecentDate(),
+        accountType: Math.random() > 0.5 ? 'Personal' : 'Business',
+        socialMediaProfiles: this.generateMockSocialProfiles(),
+        recentLogins: this.generateMockActivityLogs()
       }));
       
       const numBreaches = Math.floor(Math.random() * 2) + 1;
@@ -280,6 +290,24 @@ export class BreachDetectionService {
 
     const isBreached = breaches.length > 0;
     const riskLevel = this.calculatePhoneRiskLevel(breaches, phoneAnalysis.riskScore);
+
+    // Generate enhanced personal details and activity summary
+    const personalDetails = isBreached ? {
+      associatedName: breaches[0]?.associatedName,
+      associatedEmails: breaches.map(b => b.associatedEmail).filter(Boolean),
+      carrier: breaches[0]?.carrier,
+      registrationDate: breaches[0]?.registrationDate,
+      lastActivity: breaches[0]?.lastActiveDate,
+      verificationStatus: this.getVerificationStatus(riskLevel),
+      socialProfiles: this.generateMockSocialProfiles()
+    } : undefined;
+
+    const activitySummary = isBreached ? {
+      totalLogins: Math.floor(Math.random() * 50) + 10,
+      recentLogins: this.generateMockActivityLogs(),
+      suspiciousActivity: Math.floor(Math.random() * 5),
+      locationPattern: this.generateLocationPattern()
+    } : undefined;
 
     // Store result in database
     if (isBreached) {
@@ -296,7 +324,9 @@ export class BreachDetectionService {
               date: b.breachDate,
               severity: b.severity
             })),
-            phone_analysis: phoneAnalysis
+            phone_analysis: phoneAnalysis,
+            personal_details: personalDetails,
+            activity_summary: activitySummary
           }
         });
       } catch (error) {
@@ -311,7 +341,9 @@ export class BreachDetectionService {
       detectionDate: new Date().toISOString(),
       riskLevel,
       totalBreaches: breaches.length,
-      mostRecentBreach: breaches.length > 0 ? breaches[0] : undefined
+      mostRecentBreach: breaches.length > 0 ? breaches[0] : undefined,
+      personalDetails,
+      activitySummary
     };
   }
 
@@ -340,5 +372,95 @@ export class BreachDetectionService {
     if (breaches.length >= 2 || hasHighSeverity || phoneRisk > 0.7) return 'high';
     if (breaches.length >= 1) return 'medium';
     return 'low';
+  }
+
+  // Helper methods for generating mock enhanced data
+  private static generateMockName(): string {
+    const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emma', 'Chris', 'Lisa', 'James', 'Maria'];
+    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Wilson'];
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    return `${firstName} ${lastName}`;
+  }
+
+  private static generateMockEmail(phoneNumber: string): string {
+    const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    const username = `user${phoneNumber.slice(-4)}`;
+    return `${username}@${domain}`;
+  }
+
+  private static getRandomCarrier(): string {
+    const carriers = ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'MetroPCS', 'Cricket', 'Boost Mobile'];
+    return carriers[Math.floor(Math.random() * carriers.length)];
+  }
+
+  private static getRandomLocation(): string {
+    const locations = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 'Phoenix, AZ', 'Philadelphia, PA', 'San Antonio, TX', 'San Diego, CA'];
+    return locations[Math.floor(Math.random() * locations.length)];
+  }
+
+  private static getRandomPastDate(yearsBack: number): string {
+    const now = new Date();
+    const pastDate = new Date(now.getTime() - Math.random() * yearsBack * 365 * 24 * 60 * 60 * 1000);
+    return pastDate.toISOString().split('T')[0];
+  }
+
+  private static getRandomRecentDate(): string {
+    const now = new Date();
+    const recentDate = new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
+    return recentDate.toISOString();
+  }
+
+  private static getVerificationStatus(riskLevel: string): 'verified' | 'unverified' | 'suspicious' {
+    if (riskLevel === 'critical') return 'suspicious';
+    if (riskLevel === 'high') return Math.random() > 0.5 ? 'unverified' : 'suspicious';
+    return Math.random() > 0.3 ? 'verified' : 'unverified';
+  }
+
+  private static generateMockSocialProfiles(): Array<{platform: string; username: string; lastSeen: string}> {
+    const platforms = ['Facebook', 'Instagram', 'Twitter', 'LinkedIn', 'TikTok'];
+    const profiles = [];
+    const numProfiles = Math.floor(Math.random() * 3) + 1;
+    
+    for (let i = 0; i < numProfiles; i++) {
+      const platform = platforms[Math.floor(Math.random() * platforms.length)];
+      profiles.push({
+        platform,
+        username: `user${Math.floor(Math.random() * 10000)}`,
+        lastSeen: this.getRandomRecentDate()
+      });
+    }
+    return profiles;
+  }
+
+  private static generateMockActivityLogs(): any[] {
+    const activities = ['login', 'verification', 'password_reset', 'account_access'];
+    const platforms = ['Facebook', 'Instagram', 'Banking App', 'Email', 'Shopping App', 'Uber', 'Netflix'];
+    const locations = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Miami, FL', 'Seattle, WA'];
+    
+    const logs = [];
+    const numLogs = Math.floor(Math.random() * 8) + 3;
+    
+    for (let i = 0; i < numLogs; i++) {
+      logs.push({
+        id: `log_${i + 1}`,
+        activityType: activities[Math.floor(Math.random() * activities.length)],
+        platform: platforms[Math.floor(Math.random() * platforms.length)],
+        location: locations[Math.floor(Math.random() * locations.length)],
+        ipAddress: `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+        isSuccessful: Math.random() > 0.1,
+        riskScore: Math.floor(Math.random() * 10) + 1
+      });
+    }
+    
+    return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }
+
+  private static generateLocationPattern(): string[] {
+    const locations = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 'Miami, FL'];
+    const numLocations = Math.floor(Math.random() * 3) + 1;
+    return locations.slice(0, numLocations);
   }
 }

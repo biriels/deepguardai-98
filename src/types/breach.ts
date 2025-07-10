@@ -31,6 +31,31 @@ export interface PhoneBreachData {
   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
+  // Enhanced phone data
+  associatedName?: string;
+  associatedEmail?: string;
+  carrier?: string;
+  location?: string;
+  registrationDate?: string;
+  lastActiveDate?: string;
+  accountType?: string;
+  socialMediaProfiles?: Array<{
+    platform: string;
+    username: string; 
+    lastSeen: string;
+  }>;
+  recentLogins?: PhoneActivityLog[];
+}
+
+export interface PhoneActivityLog {
+  id: string;
+  activityType: 'login' | 'verification' | 'password_reset' | 'account_access';
+  platform: string;
+  location?: string;
+  ipAddress?: string;
+  timestamp: string;
+  isSuccessful: boolean;
+  riskScore: number;
 }
 
 export interface BreachDetectionResult {
@@ -51,6 +76,26 @@ export interface PhoneBreachDetectionResult {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   totalBreaches: number;
   mostRecentBreach?: PhoneBreachData;
+  // Enhanced phone analysis
+  personalDetails?: {
+    associatedName?: string;
+    associatedEmails?: string[];
+    carrier?: string;
+    registrationDate?: string;
+    lastActivity?: string;
+    verificationStatus?: 'verified' | 'unverified' | 'suspicious';
+    socialProfiles?: Array<{
+      platform: string;
+      username: string;
+      lastSeen: string;
+    }>;
+  };
+  activitySummary?: {
+    totalLogins: number;
+    recentLogins: PhoneActivityLog[];
+    suspiciousActivity: number;
+    locationPattern: string[];
+  };
 }
 
 export interface RecoveryStep {
