@@ -36,6 +36,9 @@ export class DeepGuardApi {
     apiKey: string = 'demo-api-key',
     options: Partial<DeepGuardOptions> = {}
   ) {
+    if (!apiKey || apiKey === 'demo-api-key') {
+      console.warn('Using demo API key. Configure proper API key for production.');
+    }
     this.apiKey = apiKey;
     this.options = {
       autoReject: options.autoReject ?? true,
@@ -59,14 +62,20 @@ export class DeepGuardApi {
     mediaType: MediaType, 
     source: ContentSource = 'other'
   ): Promise<DetectionResult> {
-    // In a real implementation, this would make an API call
-    console.log(`Analyzing URL: ${url}, type: ${mediaType}, source: ${source}`);
-    
-    // Simulating API processing time
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Mock response
-    return this.generateMockResult();
+    try {
+      // Validate URL format
+      new URL(url);
+      
+      console.log(`Analyzing URL: ${url}, type: ${mediaType}, source: ${source}`);
+      
+      // Simulating API processing time
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      return this.generateMockResult();
+    } catch (error) {
+      console.error('URL analysis failed:', error);
+      throw new Error(`Failed to analyze URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   /**
@@ -76,24 +85,34 @@ export class DeepGuardApi {
     file: File, 
     source: ContentSource = 'other'
   ): Promise<DetectionResult> {
-    // In a real implementation, this would upload the file to the API
-    console.log(`Analyzing file: ${file.name}, size: ${file.size}, source: ${source}`);
-    
-    const mediaType = file.type.startsWith('image/') 
-      ? 'image' 
-      : file.type.startsWith('video/') 
-        ? 'video' 
-        : file.type.startsWith('audio/') 
-          ? 'audio' 
-          : 'other';
-          
-    console.log(`Detected media type: ${mediaType}`);
-    
-    // Simulating upload and processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Mock response
-    return this.generateMockResult();
+    try {
+      if (!file || file.size === 0) {
+        throw new Error('Invalid file provided');
+      }
+      
+      if (file.size > 100 * 1024 * 1024) { // 100MB limit
+        throw new Error('File size exceeds maximum limit of 100MB');
+      }
+      
+      console.log(`Analyzing file: ${file.name}, size: ${file.size}, source: ${source}`);
+      
+      const mediaType = this.detectMediaType(file);
+      console.log(`Detected media type: ${mediaType}`);
+      
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      return this.generateMockResult();
+    } catch (error) {
+      console.error('File analysis failed:', error);
+      throw new Error(`Failed to analyze file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  private detectMediaType(file: File): MediaType {
+    if (file.type.startsWith('image/')) return 'image';
+    if (file.type.startsWith('video/')) return 'video';
+    if (file.type.startsWith('audio/')) return 'audio';
+    throw new Error(`Unsupported file type: ${file.type}`);
   }
 
   /**
