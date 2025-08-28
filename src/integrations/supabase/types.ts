@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      detection_results: {
+        Row: {
+          analysis_details: Json | null
+          confidence_level: string | null
+          created_at: string
+          detection_score: number
+          file_name: string
+          file_url: string | null
+          id: string
+          is_deepfake: boolean
+          processing_time_ms: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_details?: Json | null
+          confidence_level?: string | null
+          created_at?: string
+          detection_score: number
+          file_name: string
+          file_url?: string | null
+          id?: string
+          is_deepfake: boolean
+          processing_time_ms?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_details?: Json | null
+          confidence_level?: string | null
+          created_at?: string
+          detection_score?: number
+          file_name?: string
+          file_url?: string | null
+          id?: string
+          is_deepfake?: boolean
+          processing_time_ms?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      monitoring_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          metadata: Json | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          metadata?: Json | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          metadata?: Json | null
+          severity?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
