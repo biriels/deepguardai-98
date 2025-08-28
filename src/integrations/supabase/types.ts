@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_usage: {
+        Row: {
+          created_at: string
+          endpoint: string
+          id: string
+          ip_address: unknown | null
+          method: string
+          request_size: number | null
+          response_size: number | null
+          response_time_ms: number | null
+          status_code: number
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          id?: string
+          ip_address?: unknown | null
+          method: string
+          request_size?: number | null
+          response_size?: number | null
+          response_time_ms?: number | null
+          status_code: number
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          id?: string
+          ip_address?: unknown | null
+          method?: string
+          request_size?: number | null
+          response_size?: number | null
+          response_time_ms?: number | null
+          status_code?: number
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       detection_results: {
         Row: {
           analysis_details: Json | null
@@ -56,6 +98,45 @@ export type Database = {
         }
         Relationships: []
       }
+      email_breach_detections: {
+        Row: {
+          breach_data: Json | null
+          created_at: string
+          detection_date: string
+          email: string
+          id: string
+          is_breached: boolean
+          risk_level: string | null
+          total_breaches: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          breach_data?: Json | null
+          created_at?: string
+          detection_date?: string
+          email: string
+          id?: string
+          is_breached?: boolean
+          risk_level?: string | null
+          total_breaches?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          breach_data?: Json | null
+          created_at?: string
+          detection_date?: string
+          email?: string
+          id?: string
+          is_breached?: boolean
+          risk_level?: string | null
+          total_breaches?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       monitoring_alerts: {
         Row: {
           alert_type: string
@@ -88,6 +169,45 @@ export type Database = {
           metadata?: Json | null
           severity?: string
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      phone_breach_detections: {
+        Row: {
+          breach_data: Json | null
+          created_at: string
+          detection_date: string
+          id: string
+          is_breached: boolean
+          phone_number: string
+          risk_level: string | null
+          total_breaches: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          breach_data?: Json | null
+          created_at?: string
+          detection_date?: string
+          id?: string
+          is_breached?: boolean
+          phone_number: string
+          risk_level?: string | null
+          total_breaches?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          breach_data?: Json | null
+          created_at?: string
+          detection_date?: string
+          id?: string
+          is_breached?: boolean
+          phone_number?: string
+          risk_level?: string | null
+          total_breaches?: number | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
