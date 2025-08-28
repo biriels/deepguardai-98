@@ -13,7 +13,63 @@ interface BreachDatabase {
   phoneCommonBreaches: PhoneBreachData[];
 }
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+  ttl: number;
+}
+
+class RateLimiter {
+  private requests: Map<string, number[]> = new Map();
+  private readonly maxRequests = 10;
+  private readonly windowMs = 60000; // 1 minute
+
+  canMakeRequest(identifier: string): boolean {
+    const now = Date.now();
+    const requests = this.requests.get(identifier) || [];
+    
+    // Remove old requests outside the window
+    const validRequests = requests.filter(time => now - time < this.windowMs);
+    
+    if (validRequests.length >= this.maxRequests) {
+      return false;
+    }
+    
+    validRequests.push(now);
+    this.requests.set(identifier, validRequests);
+    return true;
+  }
+}
+
 export class BreachDetectionService {
+  private static cache = new Map<string, CacheEntry<any>>();
+  private static rateLimiter = new RateLimiter();
+  private static readonly CACHE_TTL = 300000; // 5 minutes
+
+  private static getCacheKey(type: string, identifier: string): string {
+    return `${type}:${identifier}`;
+  }
+
+  private static getFromCache<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+    
+    if (Date.now() - entry.timestamp > entry.ttl) {
+      this.cache.delete(key);
+      return null;
+    }
+    
+    return entry.data;
+  }
+
+  private static setCache<T>(key: string, data: T, ttl: number = this.CACHE_TTL): void {
+    this.cache.set(key, {
+      data,
+      timestamp: Date.now(),
+      ttl
+    });
+  }
+
   private static breachDatabase: BreachDatabase = {
     emailBreaches: new Map(),
     phoneBreaches: new Map(),
@@ -170,8 +226,49 @@ export class BreachDetectionService {
     return { riskScore, region };
   }
 
+  private static validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  private static validatePhoneNumber(phoneNumber: string): boolean {
+    const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+    return phoneRegex.test(phoneNumber);
+  }
+
   static async checkEmailBreaches(email: string): Promise<BreachDetectionResult> {
-    console.log(`HIBP breach detection for email: ${email}`);
+    if (!this.validateEmail(email)) {
+      throw new Error('Invalid email format');
+    }
+
+    // Check rate limit
+    if (!this.rateLimiter.canMakeRequest(email)) {
+      throw new Error('Rate limit exceeded. Please try again later.');
+    }
+
+    // Check cache
+    const cacheKey = this.getCacheKey('email', email);
+    const cached = this.getFromCache<BreachDetectionResult>(cacheKey);
+    if (cached) {
+      console.log('Returning cached email breach result');
+      return cached;
+    }
+
+    console.log(`Enhanced breach detection for: ${email}`);
+    
+    try {
+      const result = await this.performEmailBreachCheck(email);
+      this.setCache(cacheKey, result);
+      return result;
+    } catch (error) {
+      console.error('Email breach check failed:', error);
+      throw error;
+    }
+  }
+
+  private static async performEmailBreachCheck(email: string): Promise<BreachDetectionResult> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
       // Check for real breaches using HaveIBeenPwned API
@@ -320,6 +417,10 @@ export class BreachDetectionService {
   }
 
   static async checkPhoneBreaches(phoneNumber: string): Promise<PhoneBreachDetectionResult> {
+    if (!this.validatePhoneNumber(phoneNumber)) {
+      throw new Error('Invalid phone number format');
+    }
+    
     console.log(`Enhanced phone breach detection for: ${phoneNumber}`);
     
     // Simulate API delay
