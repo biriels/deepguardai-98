@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Install DeepGuard AI Extension</title>
+</head>
+<body>
+    <h1>Install DeepGuard AI Extension</h1>
+    <button onclick="installExtension()">Install Extension</button>
+    
+    <script>
+    function installExtension() {
+        if (chrome && chrome.webstore) {
+            chrome.webstore.install();
+        } else {
+            alert('Please install manually:\n1. Download extension\n2. Go to chrome://extensions/\n3. Enable Developer mode\n4. Load unpacked');
+        }
+    }
+    </script>
+</body>
+</html>

@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:extension": "vite build --config vite.config.extension.ts && npm run copy:extension-files",
+    "copy:extension-files": "copy public\\manifest.json dist-extension\\ && copy public\\popup.html dist-extension\\ && copy public\\favicon.ico dist-extension\\",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
