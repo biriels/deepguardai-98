@@ -64,7 +64,7 @@ export const useProfile = () => {
     if (error) {
       console.error('Error fetching user role:', error);
     } else {
-      setUserRole(data);
+      setUserRole(data as UserRole);
     }
     setLoading(false);
   };
