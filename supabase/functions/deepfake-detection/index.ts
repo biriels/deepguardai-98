@@ -10,7 +10,7 @@ const corsHeaders = {
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const togetherApiKey = Deno.env.get('TOGETHER_API_KEY');
+const togetherApiKey = Deno.env.get('TOGETHER_AI_API_KEY');
 if (!togetherApiKey) {
   return new Response(
     JSON.stringify({ error: 'API key not configured' }),
