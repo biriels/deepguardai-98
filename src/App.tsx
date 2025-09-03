@@ -27,6 +27,7 @@ import Agents from "./pages/Agents";
 import ExtensionTools from "./pages/ExtensionTools";
 import PaymentCallback from "./pages/PaymentCallback";
 import BreachDetection from "./pages/BreachDetection";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ function App() {
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/landing" element={<LandingPage />} />
+                    <Route path="/about" element={<About />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/pricing" element={<Pricing />} />
                     <Route path="/api-docs" element={<ApiDocs />} />
